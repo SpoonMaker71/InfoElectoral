@@ -1,3 +1,24 @@
+' ---------------------------------------------------------------
+' MÃ³dulo: modMDB.bas
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' DescripciÃ³n:
+'   Este mÃ³dulo contiene funciones tÃ©cnicas para la gestiÃ³n directa
+'   de tablas en la base de datos Access (.accdb), incluyendo
+'   operaciones de importaciÃ³n, limpieza, verificaciÃ³n y duplicaciÃ³n.
+'
+'   âš ï¸ Importante:
+'   Este mÃ³dulo no realiza validaciones de datos ni confirmaciones
+'   al usuario. Toda la lÃ³gica interactiva (mensajes, decisiones,
+'   validaciones de estructura o confirmaciones de borrado) se gestiona
+'   exclusivamente desde los formularios del proyecto.
+'
+'   Esta separaciÃ³n permite mantener una arquitectura limpia y modular,
+'   facilitando la reutilizaciÃ³n de funciones tÃ©cnicas en otros contextos.
+'
+' Fecha: [puedes aÃ±adir la fecha de creaciÃ³n o Ãºltima modificaciÃ³n]
+' ---------------------------------------------------------------
+
 Attribute VB_Name = "modMDB"
 Option Compare Database
 Option Explicit
@@ -349,9 +370,9 @@ Public Enum enumEMailRecipientType
 End Enum
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para cerrar un formulario empleando su nombre.
+' FunciÃ³n para cerrar un formulario empleando su nombre.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       sFormName   String      Nombre del formulario a cerrar.
 '
@@ -369,18 +390,18 @@ Error_CloseForm:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para cerrar el formulario con la barra de progreso.
+' FunciÃ³n para cerrar el formulario con la barra de progreso.
 '-----------------------------------------------------------------------------------------------------------------------
 Public Sub CloseProgressBar()
     If modMDB.IsLoaded("(Form) Estado Proceso") Then DoCmd.Close acForm, "(Form) Estado Proceso", acSaveNo: DoEvents
 End Sub
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Método para concatenar una cadena de texto a una variable.
+' MÃ©todo para concatenar una cadena de texto a una variable.
 '-----------------------------------------------------------------------------------------------------------------------
-' Parámetros:
+' ParÃ¡metros:
 '
-'   sVariable   String      Variable a la que se concatenará.
+'   sVariable   String      Variable a la que se concatenarÃ¡.
 '
 '   sString     String      Cadena de texto a concatenar.
 '
@@ -391,16 +412,16 @@ Public Sub Concat(ByRef sVariable As String, _
 End Sub
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para convertir un valor al formato adecuado para una sentencia SQL.
+' FunciÃ³n para convertir un valor al formato adecuado para una sentencia SQL.
 '-----------------------------------------------------------------------------------------------------------------------
-'   NOTA:   Esta función es genérica para cualquier tipo de valor.
+'   NOTA:   Esta funciÃ³n es genÃ©rica para cualquier tipo de valor.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       vValue      Variant             Valor a convertir a formato de sentencia SQL.
 '
 '       bReplace    Boolean (Opcional)  Indicador de si el valor es cadena de texto, hay que reemplazar.
-'                                       los carácteres que entren en conficto con la sintaxis SQL.
+'                                       los carÃ¡cteres que entren en conficto con la sintaxis SQL.
 '                                       (Valor por defecto = True)
 '
 '-----------------------------------------------------------------------------------------------------------------------
@@ -414,11 +435,11 @@ Public Function CSql(ByVal vValue As Variant, _
         CSql = IIf(vValue, "True", "False")
     ElseIf (VarType(vValue) = vbString) Then                ' 3. Si es una cadena de texto
         If bReplace Then
-            CSql = "'" & modSystem.ReplStr(modSystem.ReplStr(CStr(vValue), "[#]", "Ñ"), "[']", "''") & "'"
+            CSql = "'" & modSystem.ReplStr(modSystem.ReplStr(CStr(vValue), "[#]", "Ã‘"), "[']", "''") & "'"
         Else
             CSql = "'" & CStr(vValue) & "'"
         End If
-    ElseIf IsNumeric(vValue) Then                           ' 4. Si es un número
+    ElseIf IsNumeric(vValue) Then                           ' 4. Si es un nÃºmero
         CSql = Replace(CStr(CDbl(Nz(vValue, 0))), ",", ".")
     End If
 
@@ -429,9 +450,9 @@ Error_CSql:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para convertir un booleano a formato de sentencia SQL.
+' FunciÃ³n para convertir un booleano a formato de sentencia SQL.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       bValue      Boolean             Valor booleano a convertir a formato de sentencia SQL.
 '
@@ -441,9 +462,9 @@ Public Function CSqlBool(ByVal bValue As Boolean) As String
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para convertir un valor numérico a formato de número de sentencia SQL.
+' FunciÃ³n para convertir un valor numÃ©rico a formato de nÃºmero de sentencia SQL.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       vValue      Variant             Valor booleano a convertir a formato de sentencia SQL.
 '
@@ -462,17 +483,17 @@ Public Function CSqlDbl(ByVal vValue As Variant, _
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para convertir una fecha a formato de sentencia SQL.
+' FunciÃ³n para convertir una fecha a formato de sentencia SQL.
 '-----------------------------------------------------------------------------------------------------------------------
-'   NOTA:   Las fechas se manejan internamente como números de doble coma flotante.
+'   NOTA:   Las fechas se manejan internamente como nÃºmeros de doble coma flotante.
 '           Cuando se presentan en las aplicaciones, lo hacen con el formato
-'           de la configuración regional del sistema operativo. Microsoft Access
-'           interpreta siempre las fechas en sentencias SQL con el formato Inglés
-'           (mm/dd/yyyy). Cuando se manejan las fechas como número de doble
+'           de la configuraciÃ³n regional del sistema operativo. Microsoft Access
+'           interpreta siempre las fechas en sentencias SQL con el formato InglÃ©s
+'           (mm/dd/yyyy). Cuando se manejan las fechas como nÃºmero de doble
 '           coma flotante, la parte entera del mismo corresponde con la fecha, y la
 '           parte decimal con la hora.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       vValue          Variant             Valor de fecha a convertir a formato de sentencia SQL.
 '
@@ -491,9 +512,9 @@ Public Function CSqlDt(ByVal vValue As Variant, _
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para convertir un valor a formato de texto de sentencia SQL.
+' FunciÃ³n para convertir un valor a formato de texto de sentencia SQL.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       vValue      Variant             Valor a convertir a formato de literal en sentencia SQL.
 '
@@ -515,9 +536,9 @@ Public Function CSqlTxt(ByVal vValue As Variant, _
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para vaciar una tabla si tuviera datos.
+' FunciÃ³n para vaciar una tabla si tuviera datos.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       sTableDef   String                  Nombre de la tabla a vaciar de registros.
 '
@@ -531,11 +552,11 @@ Public Function DeleteIfHasRows(ByVal sTableDef As String) As Boolean
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para obtener la letra de una columna de Microsoft Excel.
+' FunciÃ³n para obtener la letra de una columna de Microsoft Excel.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
-'       Index        Byte               Índice de la columna (de 0 a n - 1)).
+'       Index        Byte               Ãndice de la columna (de 0 a n - 1)).
 '
 '-----------------------------------------------------------------------------------------------------------------------
 Public Function GetCell(ByVal Index As Byte) As String
@@ -543,16 +564,16 @@ Public Function GetCell(ByVal Index As Byte) As String
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para obtener el último valor insertado en un campo autonumérico.
+' FunciÃ³n para obtener el Ãºltimo valor insertado en un campo autonumÃ©rico.
 '-----------------------------------------------------------------------------------------------------------------------
 Public Function GetKeyId() As Long
     GetKeyId = CurrentDb.OpenRecordset("SELECT @@IDENTITY AS KeyID;")!KeyID
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para obtener el nombre de fichero de la base de datos.
+' FunciÃ³n para obtener el nombre de fichero de la base de datos.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       dbDatabase     Database  (Opcional)     Base de datos a obtener el nombre del fichero. (Por defecto = CurrentDB)
 '
@@ -562,9 +583,9 @@ Public Function GetMDBFileName() As String
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para obtener el nombre de la base de datos.
+' FunciÃ³n para obtener el nombre de la base de datos.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       dbDatabase     Database  (Opcional)     Base de datos a obtener el nombre de la base de datos. (Por defecto = CurrentDB)
 '
@@ -574,13 +595,13 @@ Public Function GetMDBName() As String
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para devolver la ruta de la carpeta de ubicación de una base de datos o de una subcarpeta.
+' FunciÃ³n para devolver la ruta de la carpeta de ubicaciÃ³n de una base de datos o de una subcarpeta.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       sSubFolder      String    (Opcional)    Subcarpeta a obtener. (Por defecto = "")
 '
-'       dbDatabase      Database  (Opcional)    Base de datos a obtener el nombre su ruta de ubicación.
+'       dbDatabase      Database  (Opcional)    Base de datos a obtener el nombre su ruta de ubicaciÃ³n.
 '                                               (Por defecto = CurrentDB)
 '
 '-----------------------------------------------------------------------------------------------------------------------
@@ -590,9 +611,9 @@ Public Function GetMDBPath(Optional ByVal sSubFolder As String = vbNullString) A
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para obtener el número de registros a los que afecta una consulta, o contenidos en una tabla.
+' FunciÃ³n para obtener el nÃºmero de registros a los que afecta una consulta, o contenidos en una tabla.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       sSource         String                  Sentencia SQL, o nombre de la tabla de donde comprobar los resgistros devueltos
 '                                               o que contiene.
@@ -607,7 +628,7 @@ End Function
 '
 '                                                   Access.AcObjectType.acTable             Tabla de la base de datos
 '
-'       dbDatabase      Database  (Opcional)    Base de datos a obtener el nombre su ruta de ubicación.
+'       dbDatabase      Database  (Opcional)    Base de datos a obtener el nombre su ruta de ubicaciÃ³n.
 '                                               (Por defecto = CurrentDB)
 '
 '-----------------------------------------------------------------------------------------------------------------------
@@ -647,9 +668,9 @@ Error_GetNumRecords:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para comprobar si existe un determinado objeto en la base de datos.
+' FunciÃ³n para comprobar si existe un determinado objeto en la base de datos.
 '-----------------------------------------------------------------------------------------------------------------------
-' Parámetros:
+' ParÃ¡metros:
 '
 '       oControl    Control                 Controla bloquear/desbloquear.
 '
@@ -693,13 +714,13 @@ Error_ObjectExists:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para determinar si una tabla o una consulta SQL contiene registros.
+' FunciÃ³n para determinar si una tabla o una consulta SQL contiene registros.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       sSource         String                          Nombre del origen de los registros.
 '
-'       lObjectType     Access.AcObjectType (Opcional)  Posición de palabra de la palabra a obtener dentro de la cadena
+'       lObjectType     Access.AcObjectType (Opcional)  PosiciÃ³n de palabra de la palabra a obtener dentro de la cadena
 '                                                   de texto. (Por defecto  = 1)
 '
 '-----------------------------------------------------------------------------------------------------------------------
@@ -745,9 +766,9 @@ Error_HasRows:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para incrementar la barra de progreso.
+' FunciÃ³n para incrementar la barra de progreso.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       lIncrement      Long        (Opcional)      Incremento a aplicar a la barra de progreso. (Por defecto = 1)
 '
@@ -771,9 +792,9 @@ Public Sub IncrProgressBar(Optional ByVal lIncrement As Long = 1, _
 End Sub
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para validar si un formulario ya está en ejecución. (cargado en memoria)
+' FunciÃ³n para validar si un formulario ya estÃ¡ en ejecuciÃ³n. (cargado en memoria)
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       sFormName       String                      Nombre del formulario a comprobar.
 '
@@ -783,9 +804,9 @@ Public Function IsLoaded(ByVal sFormName As String) As Boolean
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para validar si un objeto es un recordset valido.
+' FunciÃ³n para validar si un objeto es un recordset valido.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       oRst            Recordset       Objeto Recordset a validar.
 '
@@ -807,9 +828,9 @@ Public Function IsRst(ByRef oRst As Recordset, _
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para bloquear/desbloquear un control de formulario.
+' FunciÃ³n para bloquear/desbloquear un control de formulario.
 '-----------------------------------------------------------------------------------------------------------------------
-' Parámetros:
+' ParÃ¡metros:
 '
 '       oControl      Control            Control a bloquear/desbloquear.
 '
@@ -828,9 +849,9 @@ Public Sub LockControl(ByVal oControl As Control, _
 End Sub
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para abrir un formulario empleando su nombre y pasándole parámetros como argumentos.
+' FunciÃ³n para abrir un formulario empleando su nombre y pasÃ¡ndole parÃ¡metros como argumentos.
 '-----------------------------------------------------------------------------------------------------------------------
-' Parámetros:
+' ParÃ¡metros:
 '
 '       sFormName       String              Nombre del formulario a abrir.
 '
@@ -838,7 +859,7 @@ End Sub
 '
 '       bPreview        String  (Opcional)  Indicador del modo de apertura del formulario. (Por defecto = False)
 '
-'       bCheckIsLoaded  Boolean (Opcional)  Indicador de comprobación de apertura del formulario. (Por defecto = True)
+'       bCheckIsLoaded  Boolean (Opcional)  Indicador de comprobaciÃ³n de apertura del formulario. (Por defecto = True)
 '
 '-----------------------------------------------------------------------------------------------------------------------
 Public Function OpenForm(ByVal sFormName As String, _
@@ -847,12 +868,12 @@ Public Function OpenForm(ByVal sFormName As String, _
                          Optional ByVal bCheckIsLoaded As Boolean = True) As Form
     On Error GoTo Error_OpenForm
 
-    ' 1. Si no está abierto el formulario, lo abrimos
+    ' 1. Si no estÃ¡ abierto el formulario, lo abrimos
     If Not modMDB.IsLoaded(sFormName) Then DoCmd.OpenForm sFormName, IIf(bPreview, acPreview, acNormal), , , , , sOpenArgs
 
-    ' 2. Si se indicó comprobar que esté abierto el formulario
+    ' 2. Si se indicÃ³ comprobar que estÃ© abierto el formulario
     If bCheckIsLoaded Then
-        ' 3. Si está abierto el formulario
+        ' 3. Si estÃ¡ abierto el formulario
         If modMDB.IsLoaded(sFormName) Then
             ' 4. Devolvemos el formulario
             Set OpenForm = Forms(sFormName)
@@ -869,9 +890,9 @@ Error_OpenForm:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para eliminar un objeto de la base de datos solo si este existe.
+' FunciÃ³n para eliminar un objeto de la base de datos solo si este existe.
 '-----------------------------------------------------------------------------------------------------------------------
-' Parámetros:
+' ParÃ¡metros:
 '
 '       sObjectName     String                          Nombre del objeto a eliminar.
 '
@@ -903,16 +924,16 @@ Error_RemoveIfExists:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Método para establecer la máscara de entrada para un campo de tipo texto.
+' MÃ©todo para establecer la mÃ¡scara de entrada para un campo de tipo texto.
 '-----------------------------------------------------------------------------------------------------------------------
-' Parámetros:
+' ParÃ¡metros:
 '
-'       oTextBox        TextBox                         Caja de texto a la que aplicar la máscara de entrada
+'       oTextBox        TextBox                         Caja de texto a la que aplicar la mÃ¡scara de entrada
 '
-'       iLength         Integer             (Opcional)  Longitud de la máscara. (Por defecto 50 caracteres)
+'       iLength         Integer             (Opcional)  Longitud de la mÃ¡scara. (Por defecto 50 caracteres)
 '
-'       lLetterCase     enumTypeLetterCase  (Opcional)  Indicador de si la máscara emplea mayúsculas, minúsculas, o ambas.
-'                                                       (Por defecto BothCase = (Mayúsculas y minúsculas))
+'       lLetterCase     enumTypeLetterCase  (Opcional)  Indicador de si la mÃ¡scara emplea mayÃºsculas, minÃºsculas, o ambas.
+'                                                       (Por defecto BothCase = (MayÃºsculas y minÃºsculas))
 '
 '-----------------------------------------------------------------------------------------------------------------------
 Public Sub SetInputMask(ByVal oTextBox As TextBox, _
@@ -931,13 +952,13 @@ Public Sub SetInputMask(ByVal oTextBox As TextBox, _
 End Sub
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para devolver una cadena de texto recortada si supera una determinada longitud.
+' FunciÃ³n para devolver una cadena de texto recortada si supera una determinada longitud.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       sValue          String      Cadena de texto a recortar.
 '
-'       iMaxLength      Intergee    Logitud máxima de caracteres.
+'       iMaxLength      Intergee    Logitud mÃ¡xima de caracteres.
 '
 '-----------------------------------------------------------------------------------------------------------------------
 Public Function GetMaxLength(ByVal sValue As String, _
@@ -946,15 +967,15 @@ Public Function GetMaxLength(ByVal sValue As String, _
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Método para establecer el formato de la barra de progreso
+' MÃ©todo para establecer el formato de la barra de progreso
 '-----------------------------------------------------------------------------------------------------------------------
-' Parámetros:
+' ParÃ¡metros:
 '
-'   lMinValue   Long    (Optional)  Valor mínimo de la barra de progreso.
+'   lMinValue   Long    (Optional)  Valor mÃ­nimo de la barra de progreso.
 '
-'   lMaxValue   Long    (Optional)  Valor máximo de la barra de progreso.
+'   lMaxValue   Long    (Optional)  Valor mÃ¡ximo de la barra de progreso.
 '
-'   sTitle      String   (Optional)  Texto de título de la venta de progreso.
+'   sTitle      String   (Optional)  Texto de tÃ­tulo de la venta de progreso.
 '
 '   sCaption    String   (Optional)  Texto a mostrar en la barra de progreso.
 '
@@ -979,9 +1000,9 @@ Public Sub SetProgressBar(Optional ByVal lMinValue As Long = 0, _
 End Sub
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para establecer una relación entre tablas de una base de datos.
+' FunciÃ³n para establecer una relaciÃ³n entre tablas de una base de datos.
 '-----------------------------------------------------------------------------------------------------------------------
-' Parámetros:
+' ParÃ¡metros:
 '
 '
 '       dbDatabase          Database                Base de datos a la que pertenecen las tablas a relaciones.
@@ -990,9 +1011,9 @@ End Sub
 '
 '       sForeignTableDef    String                  Nombre de la tabla hija.
 '
-'       sFields             String                  Relación de campos que componen la relación.
+'       sFields             String                  RelaciÃ³n de campos que componen la relaciÃ³n.
 '
-'       lAttributes         Long       (Opcional)   Indicador del tipo de relación a establecer.
+'       lAttributes         Long       (Opcional)   Indicador del tipo de relaciÃ³n a establecer.
 '                                                   (POr defecto actualizar y eliminar datos en cascada)
 '
 '       sAlternateName      String     (Opcional)   Indicador de si se debe establecer la consulta como oculta.
@@ -1014,14 +1035,14 @@ Public Function SetRelation(ByVal sTableDef As String, _
 
     ' 1. Si se especificaron los campos de enlace
     If Not IsZrStr(sFields) Then
-        ' 2. Si no se ha definido un nombre específico
-        '    a la relación de las tablas, le creamos uno
+        ' 2. Si no se ha definido un nombre especÃ­fico
+        '    a la relaciÃ³n de las tablas, le creamos uno
         If IsZrStr(sAlternateName) Then sAlternateName = modMDB.GetMaxLength("PK_" & sTableDef & "_" & sForeignTableDef, 64)
 
-        ' 3. Creamos la relación
+        ' 3. Creamos la relaciÃ³n
         Set m_Rel = CurrentDb.CreateRelation(sAlternateName, sTableDef, sForeignTableDef, lAttributes)
 
-        ' 4. Establecemos los campos de enlace de la relación
+        ' 4. Establecemos los campos de enlace de la relaciÃ³n
         m_sFields = Split(sFields, ";")
         For m_lIdx = LBound(m_sFields) To UBound(m_sFields)
             If Not IsZrStr(m_sFields(m_lIdx)) Then
@@ -1031,7 +1052,7 @@ Public Function SetRelation(ByVal sTableDef As String, _
             End If
         Next m_lIdx
 
-        ' 5. Agregamos la relación creada a la base de datos
+        ' 5. Agregamos la relaciÃ³n creada a la base de datos
         If Not IsZr(m_Rel.Fields.Count) Then
             With CurrentDb.Relations
                 .Append m_Rel
@@ -1059,13 +1080,13 @@ Error_SetRelation:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para exportar los resultados de una consulta a un archivo Excel.
+' FunciÃ³n para exportar los resultados de una consulta a un archivo Excel.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Parámetros:
+'   ParÃ¡metros:
 '
 '       sSQL                String                      Sentencia SQL.
 '
-'       sWorkSheet          String                      Nombre de la hoja de datos donde se volcará los datos de
+'       sWorkSheet          String                      Nombre de la hoja de datos donde se volcarÃ¡ los datos de
 '                                                       la consulta.
 '
 '       sXLSFilePath        String                      Ruta de destino del archivo Excel a generar.
@@ -1077,18 +1098,18 @@ End Function
 '       bShow               Boolean (Opcional)          Indicador de si se debe abrir el fichero MS Excel para mostrarlo,
 '                                                       una vez generado. (Por defecto = False)
 '
-'       sTitle              String (Opcional)           Título del fichero MS Excel. (Por defecto = "")
+'       sTitle              String (Opcional)           TÃ­tulo del fichero MS Excel. (Por defecto = "")
 '
 '       sSubject            String (Opcional)           Asunto del fichero MS Excel. (Por defecto = "")
 '
-'       sCategory           String (Opcional)           Categoría del fichero MS Excel. (Por defecto = "")
+'       sCategory           String (Opcional)           CategorÃ­a del fichero MS Excel. (Por defecto = "")
 '
 '       sComments           String (Opcional)           Comentarios del fichero MS Excel. (Por defecto = "")
 '
-'       bAutoFilter         Boolean (Opcional)          Indicador de si se debe aplicar autofiltro a la hoja de cálculo
+'       bAutoFilter         Boolean (Opcional)          Indicador de si se debe aplicar autofiltro a la hoja de cÃ¡lculo
 '                                                       generada. (Por defecto = False)
 '
-'       colDocProperties    colDocProperties (Opcional) Colección de propiedades de documento a aplicar al nuevo
+'       colDocProperties    colDocProperties (Opcional) ColecciÃ³n de propiedades de documento a aplicar al nuevo
 '                                                       fichero MS Excel. (Por defecto = Nothing)
 '
 '       bControlDevelopment Boolean          (Opcional) Indicador de si se emplea control de desarrollo.
@@ -1117,7 +1138,7 @@ Public Function ToMSExcel(ByVal sSQL As String, _
 
     ' 2. Si existe el fichero MS Excel a generar
     If modSystem.FileExists(sXLSFilePath) Then
-        ' 3. Si no se indicó la posibilidad de reemplazar el fichero anterior con el nuevo
+        ' 3. Si no se indicÃ³ la posibilidad de reemplazar el fichero anterior con el nuevo
         If Not bReplace Then
             ' 4. Mostramos mensaje al usuario
             MsgBox "Ya existe el fichero MS Excel en la ruta indicada, y no puede ser reemplazado.", (vbOKOnly + vbExclamation), "Fichero MS Excel ya existe"
@@ -1129,7 +1150,7 @@ Public Function ToMSExcel(ByVal sSQL As String, _
             ' 7. Si no se pudo eliminar el fichero antiguo
             If Not modSystem.DeleteFile(sXLSFilePath) Then
                 ' 8. Mostramos mensaje al usuario
-                MsgBox "El fichero MS Excel ya se encuentra en la ruta establecida, y no puede ser reemplazado, dado que está abierto por algún usuario." & vbCrLf & vbCrLf & "Compruebe que no sea usted mismo quién lo tenga abierto.", (vbOKOnly + vbExclamation), "Fichero MS Excel bloqueado"
+                MsgBox "El fichero MS Excel ya se encuentra en la ruta establecida, y no puede ser reemplazado, dado que estÃ¡ abierto por algÃºn usuario." & vbCrLf & vbCrLf & "Compruebe que no sea usted mismo quiÃ©n lo tenga abierto.", (vbOKOnly + vbExclamation), "Fichero MS Excel bloqueado"
 
                 ToMSExcel = enumMSExcelFileStatus.xlLockedByUser
 
@@ -1164,14 +1185,14 @@ Public Function ToMSExcel(ByVal sSQL As String, _
             ' 12. Se exporta el resultado de la consulta a un fichero MS Excel
             DoCmd.TransferSpreadsheet acExport, modMDB.GetMSExcelDefaultWorkbookFormat(), .Name, sXLSFilePath, True
 
-            ' 13. Indicamos que se realizó la importación
+            ' 13. Indicamos que se realizÃ³ la importaciÃ³n
             If modSystem.FileExists(sXLSFilePath) Then
                 Dim m_Excel         As Object
                 Dim m_lRows         As Long
                 Dim m_lRow          As Long
                 Dim m_lCols         As Long
 
-                ' 14. Obtenemos el número total de registros y columnas
+                ' 14. Obtenemos el nÃºmero total de registros y columnas
                 m_lRows = modMDB.GetNumRecords(m_sWkst, acQuery)
                 m_lCols = CurrentDb.QueryDefs(m_sWkst).Fields.Count
 
@@ -1184,7 +1205,7 @@ Public Function ToMSExcel(ByVal sSQL As String, _
                         With .Worksheets(.Worksheets.Count)
                             .Name = sWorkSheet
 
-                            ' 16. Si se indicó, establecemos el autofiltro
+                            ' 16. Si se indicÃ³, establecemos el autofiltro
                             If bAutoFilter Then .Rows("1:1").AutoFilter
 
                             ' 17. Damos formato a la cabecera de resultados
@@ -1303,7 +1324,7 @@ Public Function ToMSExcel(ByVal sSQL As String, _
                                 If (m_lRows > 1) Then .Borders(xlAlignment.xlInsideHorizontal).LineStyle = xlUnderlineStyle.xlSolid
                             End With
 
-                            ' 19. Damos formato a la columna con los números de votos
+                            ' 19. Damos formato a la columna con los nÃºmeros de votos
                             .Range(modMDB.GetCell(m_lCols - 1) & "2:" & modMDB.GetCell(m_lCols - 1) & (m_lRows + IIf(bShowTotals, 2, 1))).NumberFormat = "#,##0"
 
                             If bShowTotals Then
@@ -1355,7 +1376,7 @@ Public Function ToMSExcel(ByVal sSQL As String, _
                                     .Borders(xlAlignment.xlInsideHorizontal).LineStyle = xlNone
                                 End With
 
-                                ' 21. Damos formato a la línea de total
+                                ' 21. Damos formato a la lÃ­nea de total
                                 With .Range(modMDB.GetCell(0) & (m_lRows + 2) & ":" & modMDB.GetCell(m_lCols - 2) & (m_lRows + 2))
                                     .HorizontalAlignment = xlAlignment.xlRight
                                     .VerticalAlignment = xlAlignment.xlBottom
@@ -1473,7 +1494,7 @@ Public Function ToMSExcel(ByVal sSQL As String, _
                 Set m_Excel = Nothing
             End If
 
-            ' 27. Si se indicó, abrimos el fichero resultante
+            ' 27. Si se indicÃ³, abrimos el fichero resultante
             If bShow Then modSystem.OpenMSExcel sXLSFilePath, vbNormalFocus
 
             .Close
@@ -1482,16 +1503,16 @@ Public Function ToMSExcel(ByVal sSQL As String, _
         ' 28. Se elimina la consulta
         .QueryDefs.Delete m_sWkst
 
-        ' 29. Indicamos el éxito del proceso
+        ' 29. Indicamos el Ã©xito del proceso
         ToMSExcel = enumMSExcelFileStatus.xlSuccess
     End With
 
 Error_ToMSExcel:
-    ' 1. Si no está cerrado el objeto Excel.Application
+    ' 1. Si no estÃ¡ cerrado el objeto Excel.Application
     If Not m_Excel Is Nothing Then
         Dim m_iWkb  As Integer
 
-        ' 2. Recorremos la colección de libros desde el último al primero para cerrarlos
+        ' 2. Recorremos la colecciÃ³n de libros desde el Ãºltimo al primero para cerrarlos
         For m_iWkb = m_Excel.Workbooks.Count To 1 Step -1
             m_Excel.Workbooks(m_iWkb).Close SaveChanges:=False
         Next m_iWkb
@@ -1500,7 +1521,7 @@ Error_ToMSExcel:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para obtener por el tipo de versión de MS Excel los archivos MS Excel compatibles
+' FunciÃ³n para obtener por el tipo de versiÃ³n de MS Excel los archivos MS Excel compatibles
 '-----------------------------------------------------------------------------------------------------------------------
 Public Function GetMSExcelDefaultExtension(Optional ByVal bDefault As Boolean = False) As String
     Select Case modMDB.GetMSOfficeVersion()
@@ -1513,7 +1534,7 @@ Public Function GetMSExcelDefaultExtension(Optional ByVal bDefault As Boolean = 
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para obtener por el tipo de versión de MS Excel los archivos MS Excel compatibles
+' FunciÃ³n para obtener por el tipo de versiÃ³n de MS Excel los archivos MS Excel compatibles
 '-----------------------------------------------------------------------------------------------------------------------
 Public Function GetMSExcelDefaultWorkbookFormat(Optional ByVal bDefault As Boolean = False) As Long
     Select Case modMDB.GetMSOfficeVersion()
@@ -1526,14 +1547,14 @@ Public Function GetMSExcelDefaultWorkbookFormat(Optional ByVal bDefault As Boole
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para obtener el número de versión de Microsoft Office
+' FunciÃ³n para obtener el nÃºmero de versiÃ³n de Microsoft Office
 '-----------------------------------------------------------------------------------------------------------------------
 Public Function GetMSOfficeVersion() As Integer
     GetMSOfficeVersion = CInt(Split(Trim(Application.Version), ".")(0))
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' Función para instanciar un objeto MS Excel Application dependiendo de la versión de MS Office.
+' FunciÃ³n para instanciar un objeto MS Excel Application dependiendo de la versiÃ³n de MS Office.
 '-----------------------------------------------------------------------------------------------------------------------
 Public Function GetMSExcelApplication() As Object
     Set GetMSExcelApplication = CreateObject("Excel.Application." & modMDB.GetMSOfficeVersion())
