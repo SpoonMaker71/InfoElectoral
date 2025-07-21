@@ -43,7 +43,7 @@ AccessElectoral/
 - Descarga o clona el repositorio:
 git clone https://github.com/tuusuario/AccessElectoral.git
 - Abre el archivo AccessDB.accdb.
-- Ejecuta el formulario principal desde el panel de navegación.
+- Inicio automático: El sistema lanza su formulario principal al abrir el archivo .accdb, siempre que las macros estén habilitadas. No requiere interacción directa con la ventana de Access.
 - Sigue el flujo guiado para importar datos, navegar por niveles, consultar y exportar.
 
 📤 Exportación a Excel
