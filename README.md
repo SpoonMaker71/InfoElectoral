@@ -1,5 +1,9 @@
 📘 Proyecto: InfoElectoral AccessVBA
 
+![Revisado con Copilot](https://img.shields.io/badge/Revisado%20con-Copilot-00ADEF?logo=microsoft&logoColor=white&style=flat-square)
+![Licencia](https://img.shields.io/badge/Licencia-GPL-blue)
+![Tecnología](https://img.shields.io/badge/Microsoft%20Access-VBA-yellow)
+
 🗳️ Proyecto Access VBA para importar y analizar resultados electorales por mesa en España.
 Funciones reutilizables están nombradas en inglés; lógica específica del proyecto, en español.
 Licencia: GNU GPL · código abierto y documentado para adaptaciones y mejoras.
