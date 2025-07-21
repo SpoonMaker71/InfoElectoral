@@ -1,3 +1,19 @@
+' ---------------------------------------------------------------
+' Formulario: Form_(Form) Estado Proceso
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' Descripción:
+'   Formulario auxiliar que muestra el estado actual del proceso
+'   de importación, validación y análisis de datos electorales.
+'   Permite al usuario visualizar el progreso, detectar errores
+'   y confirmar que cada etapa se ha completado correctamente.
+'
+'   ⚠️ Este formulario no modifica datos directamente.
+'   Su propósito es informativo y de control visual del flujo.
+'
+' Fecha: [añadir fecha]
+' ---------------------------------------------------------------
+
 VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
