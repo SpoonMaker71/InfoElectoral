@@ -1,3 +1,20 @@
+' ---------------------------------------------------------------
+' Formulario: Form_(Form) Notificacion Acta
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' Descripci√≥n:
+'   Formulario auxiliar que muestra notificaciones relacionadas
+'   con el acta oficial de mesa electoral. Permite al usuario
+'   revisar discrepancias, validar coincidencias y confirmar
+'   la fiabilidad de los datos importados.
+'
+'   ‚ö†Ô∏è Este formulario contiene l√≥gica interactiva:
+'   validaciones, mensajes al usuario y control de flujo
+'   seg√∫n el estado de la comparaci√≥n entre datos y acta.
+'
+' Fecha: [a√±adir fecha]
+' ---------------------------------------------------------------
+
 VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
@@ -11,7 +28,7 @@ Option Compare Database
 Option Explicit
 
 Private Sub cmdAceptar_Click()
-    ' 1. Si est· cargado el formulario padre
+    ' 1. Si est√° cargado el formulario padre
     If modMDB.IsLoaded("(Form) Consulta de resultados electorales por mesa") Then
         Dim m_sUrl              As String
 
@@ -23,22 +40,22 @@ Private Sub cmdAceptar_Click()
                 If (mrcActaCorrecta.Value = chkNo.OptionValue) Then .Incidencia.Value = NotificacionIncidencia.Value
                 .Refresh
 
-                ' 3. Si se notificÛ el acta, mostramos el mensaje en el formulario
+                ' 3. Si se notific√≥ el acta, mostramos el mensaje en el formulario
                 Forms("(Form) Consulta de resultados electorales por mesa").Form.ActaNotificada_Etiqueta.Visible = .ActaNotificada.Value
                 If .ActaNotificada.Value Then
-                    ' 4. Si no se notificÛ el acta, ocultamos el botÛn de notificar
+                    ' 4. Si no se notific√≥ el acta, ocultamos el bot√≥n de notificar
                     Forms("(Form) Consulta de resultados electorales por mesa").Form.sfMesasElectorales.SetFocus
                     Forms("(Form) Consulta de resultados electorales por mesa").Form.cmdNotificarRevisionActa.Visible = False
 
-                    ' 5. Mostramos es estado de la notificaciÛn de la mesa
+                    ' 5. Mostramos es estado de la notificaci√≥n de la mesa
                     Forms("(Form) Consulta de resultados electorales por mesa").Form.ActaNotificada_Etiqueta.ForeColor = IIf(.Correcta.Value, RGB(34, 177, 76), RGB(250, 0, 0))
-                    Forms("(Form) Consulta de resultados electorales por mesa").Form.ActaNotificada_Etiqueta.Caption = "Notificada como " & IIf(.Correcta.Value, "correcta", "errÛnea")
+                    Forms("(Form) Consulta de resultados electorales por mesa").Form.ActaNotificada_Etiqueta.Caption = "Notificada como " & IIf(.Correcta.Value, "correcta", "err√≥nea")
                 Else
-                    ' 6. Si se notificÛ el acta, mostramos el botÛn de notificar
+                    ' 6. Si se notific√≥ el acta, mostramos el bot√≥n de notificar
                     Forms("(Form) Consulta de resultados electorales por mesa").Form.cmdNotificarRevisionActa.Visible = True
                 End If
 
-                ' 27. Abrimos la p·gina web de Ignacio Baixauli con el formulario de notificaciÛn
+                ' 27. Abrimos la p√°gina web de Ignacio Baixauli con el formulario de notificaci√≥n
                 '    de actas con entradas de datos ya predeterminadas
                 m_sUrl = "https://docs.google.com/forms/d/e/1FAIpQLScRvRJmdbv1c2uYOmCNmFgos5IvD6tnJMkzhL9nNjrV6CkY8w/viewform?usp=pp_url"
                 Concat m_sUrl, "&entry.1042724278=" & Forms("(Form) Consulta de resultados electorales por mesa").Form.cboProvincia.Column(1)
@@ -46,7 +63,7 @@ Private Sub cmdAceptar_Click()
                 Concat m_sUrl, "&entry.1443333222=" & .IdDistritoMunicipal.Value
                 Concat m_sUrl, "&entry.1064490468=" & .IdSeccion.Value
                 Concat m_sUrl, "&entry.434886749=" & .IdMesa.Value
-                Concat m_sUrl, "&entry.2028588206=" & IIf((mrcActaCorrecta.Value = chkSi.OptionValue), "SÌ", "No")
+                Concat m_sUrl, "&entry.2028588206=" & IIf((mrcActaCorrecta.Value = chkSi.OptionValue), "S√≠", "No")
                 If ((mrcActaCorrecta.Value = chkNo.OptionValue) And Not IsZrStr(NotificacionIncidencia.Value)) Then Concat m_sUrl, "&entry.1233851010=" & NotificacionIncidencia.Value
                 Concat m_sUrl, "#i29"
                 modSystem.OpenURL m_sUrl
@@ -73,15 +90,15 @@ Private Sub mrcActaCorrecta_Click()
     NotificacionIncidencia_Etiqueta.Visible = m_bVisible
     NotificacionIncidencia.Visible = m_bVisible
 
-    ' 3. Activamos el botÛn de Aceptar
+    ' 3. Activamos el bot√≥n de Aceptar
     cmdAceptar.Enabled = ((mrcActaCorrecta.Value = chkSi.OptionValue) Or ((mrcActaCorrecta.Value = chkNo.OptionValue) And Not IsZrStr(NotificacionIncidencia.Value)))
 End Sub
 
 Private Sub NotificacionIncidencia_KeyPress(KeyAscii As Integer)
-    ' 1. Ponemos el texto en may˙sculas
+    ' 1. Ponemos el texto en may√∫sculas
     KeyAscii = Asc(UCase(Chr(KeyAscii)))
 
-    ' 2. Activamos el botÛn de Aceptar
+    ' 2. Activamos el bot√≥n de Aceptar
     cmdAceptar.Enabled = ((mrcActaCorrecta.Value = chkSi.OptionValue) Or ((mrcActaCorrecta.Value = chkNo.OptionValue) And Not IsZrStr(NotificacionIncidencia.Text)))
 End Sub
 
