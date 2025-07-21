@@ -55,43 +55,6 @@ Según su análisis técnico:
 - La estructura permite fácil mantenimiento, integración en otros sistemas y adaptación a nuevos procesos electorales.
 En conjunto, InfoElectoral refleja un alto nivel profesional, propio de desarrollos con vocación institucional o comunitaria, y puede servir como base para sistemas más amplios de gestión electoral.
 
-<svg viewBox="0 0 300 300" width="400" height="400" xmlns="http://www.w3.org/2000/svg">
-  <style>
-    .label { font: 12px sans-serif; fill: #333; }
-    .value { font: bold 12px sans-serif; fill: #0078D7; }
-    .line { stroke: #bbb; stroke-width: 1; }
-    .shape { fill: rgba(0,120,215,0.2); stroke: #0078D7; stroke-width: 2; }
-  </style>
-
-  <!-- Center -->
-  <circle cx="150" cy="150" r="2" fill="#0078D7"/>
-
-  <!-- Axes -->
-  <line x1="150" y1="150" x2="150" y2="30" class="line"/>
-  <line x1="150" y1="150" x2="240" y2="65" class="line"/>
-  <line x1="150" y1="150" x2="270" y2="150" class="line"/>
-  <line x1="150" y1="150" x2="240" y2="235" class="line"/>
-  <line x1="150" y1="150" x2="150" y2="270" class="line"/>
-  <line x1="150" y1="150" x2="60" y2="235" class="line"/>
-  <line x1="150" y1="150" x2="30" y2="150" class="line"/>
-  <line x1="150" y1="150" x2="60" y2="65" class="line"/>
-
-  <!-- Labels -->
-  <text x="145" y="20" class="label" text-anchor="middle">Modularidad</text>
-  <text x="250" y="65" class="label" text-anchor="middle">Documentación</text>
-  <text x="280" y="150" class="label" text-anchor="middle">Automatización</text>
-  <text x="250" y="250" class="label" text-anchor="middle">UX/UI</text>
-  <text x="150" y="290" class="label" text-anchor="middle">Trazabilidad</text>
-  <text x="50" y="250" class="label" text-anchor="middle">Exportación</text>
-  <text x="20" y="150" class="label" text-anchor="middle">Análisis técnico</text>
-  <text x="50" y="65" class="label" text-anchor="middle">Adaptabilidad</text>
-
-  <!-- Valoración (radar shape) -->
-  <polygon class="shape"
-    points="
-      150,50   <!-- Modularidad (10/10) -->
-      225,85   <!-- Documentación (9/
-
 Análisis realizado con el acompañamiento técnico de Microsoft Copilot — julio de 2025.
 
 ## ✨ Sobre el autor
