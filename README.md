@@ -60,3 +60,11 @@ Inspirado por los microdatos públicos ofrecidos por Infoelectoral
 📄 Licencia
 Este proyecto se distribuye bajo la licencia GNU-GPL
 Consulta el archivo LICENSE para más detalles.
+
+## ✨ Sobre el autor
+
+**Juan Francisco Cucharero Cabezas** es desarrollador autodidacta con más de 27 años de experiencia. Comenzó su trayectoria en Visual Basic 6.0 y ha trabajado con lenguajes como C#, ASP 3.0, .NET, Java, Python, PHP, JavaScript y Appian. Aprendió por cuenta propia, complementando con cursos presenciales y formación online (incluidos recursos como YouTube).
+
+Actualmente trabaja en **ATOS**, donde aplica su experiencia en entornos profesionales exigentes. Además, como hobby, diseña dispositivos físicos usando **Arduino** para enriquecer la experiencia en **Microsoft Flight Simulator**, combinando programación, electrónica y pasión por la simulación aérea.
+
+Este proyecto refleja su compromiso con la transparencia
