@@ -1,3 +1,20 @@
+' ---------------------------------------------------------------
+' Clase: clsDocProperty
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' Descripción:
+'   Clase auxiliar para leer, modificar o establecer propiedades
+'   personalizadas en documentos Office (principalmente Excel).
+'   Permite añadir metadatos como autor, título, proceso electoral,
+'   fecha de exportación, etc.
+'
+'   ⚠️ Esta clase no contiene lógica de negocio ni interacción directa.
+'   Su propósito es técnico: enriquecer los archivos generados con
+'   información contextual útil para trazabilidad y auditoría.
+'
+' Fecha: [añadir fecha]
+' ---------------------------------------------------------------
+
 VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
