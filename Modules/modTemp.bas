@@ -1,3 +1,18 @@
+' ---------------------------------------------------------------
+' Módulo: modTemp.bas
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' Descripción:
+'   Funciones auxiliares para el manejo de datos temporales durante
+'   la importación, transformación y validación de microdatos electorales.
+'
+'   ⚠️ Este módulo no contiene interacción directa con el usuario.
+'   Su propósito es servir como capa intermedia entre la lectura de
+'   ficheros y la inserción definitiva en tablas del sistema.
+'
+' Fecha: [añadir fecha]
+' ---------------------------------------------------------------
+
 Attribute VB_Name = "modTemp"
 Option Compare Database
 Option Explicit
@@ -25,7 +40,7 @@ Public Sub ImportarFichero()
         m_sSql = "DELETE IMP_Colegios_Electorales.*"
         Concat m_sSql, " FROM IMP_Colegios_Electorales"
         Concat m_sSql, " WHERE ((IMP_Colegios_Electorales.IdTipoProcesoElectoral = 2)"
-        Concat m_sSql, " AND (IMP_Colegios_Electorales.A�o = 2019)"
+        Concat m_sSql, " AND (IMP_Colegios_Electorales.Año = 2019)"
         Concat m_sSql, " AND (IMP_Colegios_Electorales.Mes = 11)"
         Concat m_sSql, " AND (IMP_Colegios_Electorales.Vuelta = 1)"
         Concat m_sSql, " AND (IMP_Colegios_Electorales.IdINEComunidadAutonoma = " & CSqlDbl(m_lIdINEComunidadAutonoma) & ")"
@@ -41,7 +56,7 @@ Public Sub ImportarFichero()
             If (Mid(m_sLine(m_lIdx), 1, Len("Municipio: ")) = "Municipio: ") Then
                 m_lIdMunicipio = CLng(Mid(m_sLine(m_lIdx), 12, 3))
             Else
-                m_sSql = "INSERT INTO IMP_Colegios_Electorales (IdTipoProcesoElectoral, A�o, Mes, Vuelta, IdINEComunidadAutonoma, IdINEProvincia, IdINEMunicipio, IdDistritoMunicipal, IdSeccion, IdMesa, Tramo, Colegio)"
+                m_sSql = "INSERT INTO IMP_Colegios_Electorales (IdTipoProcesoElectoral, Año, Mes, Vuelta, IdINEComunidadAutonoma, IdINEProvincia, IdINEMunicipio, IdDistritoMunicipal, IdSeccion, IdMesa, Tramo, Colegio)"
                 Concat m_sSql, " VALUES "
                 Concat m_sSql, "(2, "
                 Concat m_sSql, " 2019,"
@@ -84,24 +99,24 @@ Public Sub ImportarFicherosTXT()
 
     Screen.MousePointer = 11
 
-    ' 2. Obtenemos la colecci�n de ficheros TXT que contiene la carpeta seleccionada
+    ' 2. Obtenemos la colección de ficheros TXT que contiene la carpeta seleccionada
     m_sRutaFicheroTXT = Dir(m_sFolderPath & "*.txt", vbArchive)
     While Not IsZrStr(m_sRutaFicheroTXT)
         m_sColFicherosTXT.Add m_sFolderPath & m_sRutaFicheroTXT
         m_sRutaFicheroTXT = Dir()
     Wend
 
-    ' 3. Si habia ficheros en la colecci�n
+    ' 3. Si habia ficheros en la colección
     If Not IsZr(m_sColFicherosTXT.Count) Then
         ' 4. Estableceos la barra de progreso
         modMDB.SetProgressBar 0, m_sColFicherosTXT.Count, "Importando Ficheros TXT"
 
-        ' 5. Recorremos la colecci�n de ficheros
+        ' 5. Recorremos la colección de ficheros
         For m_lFicheroTXT = 1 To m_sColFicherosTXT.Count
             ' 6. Incrementamos la barra de progreso
             modMDB.IncrProgressBar 1, "Importando fichero correspondiente a " & Split(modSystem.GetFileName(m_sColFicherosTXT(m_lFicheroTXT)), "-")(2) & ".", True
 
-            ' 7. Obtenemos los c�digos INE de la comunidad aut�noma y de la provincia del nombre del fichero
+            ' 7. Obtenemos los códigos INE de la comunidad autónoma y de la provincia del nombre del fichero
             m_lIdINEComunidadAutonoma = CLng(Split(modSystem.GetFileName(m_sColFicherosTXT(m_lFicheroTXT)), "-")(0))
             m_lIdINEProvincia = CLng(Split(modSystem.GetFileName(m_sColFicherosTXT(m_lFicheroTXT)), "-")(1))
 
@@ -109,7 +124,7 @@ Public Sub ImportarFicherosTXT()
             m_sSql = "DELETE IMP_Colegios_Electorales.*"
             Concat m_sSql, " FROM IMP_Colegios_Electorales"
             Concat m_sSql, " WHERE ((IMP_Colegios_Electorales.IdTipoProcesoElectoral = 2)"
-            Concat m_sSql, " AND (IMP_Colegios_Electorales.A�o = 2019)"
+            Concat m_sSql, " AND (IMP_Colegios_Electorales.Año = 2019)"
             Concat m_sSql, " AND (IMP_Colegios_Electorales.Mes = 11)"
             Concat m_sSql, " AND (IMP_Colegios_Electorales.Vuelta = 1)"
             Concat m_sSql, " AND (IMP_Colegios_Electorales.IdINEComunidadAutonoma = " & CSqlDbl(m_lIdINEComunidadAutonoma) & ")"
@@ -119,15 +134,15 @@ Public Sub ImportarFicherosTXT()
             ' 9. Cargamos en un array los datos del fichero
             m_sLine = Split(modSystem.ReadFile(m_sColFicherosTXT(m_lFicheroTXT), enumCharcode.CdoUTF_8), vbCrLf)
 
-            ' 10. Recorremos las l�neas del arrray
+            ' 10. Recorremos las líneas del arrray
             For m_lIdx = LBound(m_sLine) To UBound(m_sLine)
-                ' 11. Si la l�nea actual corresponde al municipio
+                ' 11. Si la línea actual corresponde al municipio
                 If (Mid(m_sLine(m_lIdx), 1, Len("Municipio: ")) = "Municipio: ") Then
-                    ' 12. Tomamos el c�digo INE del municipio
+                    ' 12. Tomamos el código INE del municipio
                     m_lIdMunicipio = CLng(Mid(m_sLine(m_lIdx), 12, 3))
                 Else
                     ' 13. Insertamos en la tabla el registro de la mesa electoral
-                    m_sSql = "INSERT INTO IMP_Colegios_Electorales (IdTipoProcesoElectoral, A�o, Mes, Vuelta, IdINEComunidadAutonoma, IdINEProvincia, IdINEMunicipio, IdDistritoMunicipal, IdSeccion, IdMesa, Tramo, Colegio)"
+                    m_sSql = "INSERT INTO IMP_Colegios_Electorales (IdTipoProcesoElectoral, Año, Mes, Vuelta, IdINEComunidadAutonoma, IdINEProvincia, IdINEMunicipio, IdDistritoMunicipal, IdSeccion, IdMesa, Tramo, Colegio)"
                     Concat m_sSql, " VALUES "
                     Concat m_sSql, "(2, "
                     Concat m_sSql, " 2019,"
@@ -393,7 +408,7 @@ Public Function Generar_JSON_Municipios() As Boolean
         ' 4. Establecemos la barra de progreso
         modMDB.SetProgressBar 0, m_rstProvincias.RecordCount, "Generando fichero jSON"
 
-        ' 5. Iniciamos la construcci�n del fichero JSON
+        ' 5. Iniciamos la construcción del fichero JSON
         m_sJSONText = "{"
 
         ' 6. Recorremos las distintas provincias
@@ -448,7 +463,7 @@ Public Function Generar_JSON_Municipios() As Boolean
 End Function
 
 Public Function Generar_Ficheros_Excel_Comparativa_Actas_Por_Provincia(ByVal lIdTipoProcesoElectoral As Long, _
-                                                                       ByVal iA�o As Integer, _
+                                                                       ByVal iAño As Integer, _
                                                                        ByVal iMes As Integer, _
                                                                        ByVal iVuelta As Integer) As Boolean
     Dim m_sSql      As String
@@ -465,7 +480,7 @@ Public Function Generar_Ficheros_Excel_Comparativa_Actas_Por_Provincia(ByVal lId
         modMDB.SetProgressBar 0, m_Rst.RecordCount, "Generando ficheros Excel de Resultados por Mesa Electoral", "Generando ficheros Excel de Resultados por Mesa Electoral"
         While Not m_Rst.EOF
             modMDB.IncrProgressBar 1, "Generando resultados por mesa electoral para " & m_Rst!NOMBRE & ".", True
-            Generar_Ficheros_Excel_Comparativa_Actas_Por_Provincia = Generar_Ficheros_Excel_Comparativa_Actas_Por_Provincia And modTemp.Exportar_Resultados_Candidaturas_por_Provincia_A_Excel(lIdTipoProcesoElectoral, iA�o, iMes, iVuelta, m_Rst!IdINEProvincia)
+            Generar_Ficheros_Excel_Comparativa_Actas_Por_Provincia = Generar_Ficheros_Excel_Comparativa_Actas_Por_Provincia And modTemp.Exportar_Resultados_Candidaturas_por_Provincia_A_Excel(lIdTipoProcesoElectoral, iAño, iMes, iVuelta, m_Rst!IdINEProvincia)
             m_Rst.MoveNext
         Wend
         modMDB.CloseProgressBar
@@ -476,7 +491,7 @@ Public Function Generar_Ficheros_Excel_Comparativa_Actas_Por_Provincia(ByVal lId
 End Function
 
 Public Function Exportar_Resultados_Candidaturas_por_Provincia_A_Excel(ByVal lIdTipoProcesoElectoral As Long, _
-                                                                       ByVal iA�o As Integer, _
+                                                                       ByVal iAño As Integer, _
                                                                        ByVal iMes As Integer, _
                                                                        ByVal iVuelta As Integer, _
                                                                        ByVal iIdINEProvincia As Integer) As Boolean
@@ -486,10 +501,10 @@ Public Function Exportar_Resultados_Candidaturas_por_Provincia_A_Excel(ByVal lId
     ' 1. Si existe, eliminamos la tabla temporal con los resultados de las candidaturas por mesas electorales
     modMDB.RemoveIfExists "TMP_Resultados_Candidaturas_por_Mesa_Electoral", acTable
 
-    ' 2. Obtenemos la relaci�n de candidaturas del proceso electoral
+    ' 2. Obtenemos la relación de candidaturas del proceso electoral
     m_sSql = "SELECT"
     Concat m_sSql, " [02XXAAMM].IdTipoProcesoElectoral,"
-    Concat m_sSql, " [02XXAAMM].A�o,"
+    Concat m_sSql, " [02XXAAMM].Año,"
     Concat m_sSql, " [02XXAAMM].Mes,"
     Concat m_sSql, " [02XXAAMM].Vuelta,"
     Concat m_sSql, " Format([02XXAAMM].FechaProcesoElectoral, 'yyyy\ ') & Format([02XXAAMM].FechaProcesoElectoral, 'dd') & Left(UCase(Format([02XXAAMM].FechaProcesoElectoral, 'mmm')), 1) AS Titulo,"
@@ -499,16 +514,16 @@ Public Function Exportar_Resultados_Candidaturas_por_Provincia_A_Excel(ByVal lId
     Concat m_sSql, " [03XXAAMM].Siglas,"
     Concat m_sSql, " [03XXAAMM].Denominacion"
     Concat m_sSql, " FROM (([02XXAAMM]"
-    Concat m_sSql, " INNER JOIN [03XXAAMM] ON ([02XXAAMM].IdTipoProcesoElectoral = [03XXAAMM].IdTipoProcesoElectoral) AND ([02XXAAMM].A�o = [03XXAAMM].A�o) AND ([02XXAAMM].Mes = [03XXAAMM].Mes))"
-    Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].A�o = [10XXAAMM].A�o) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([02XXAAMM].Vuelta = [10XXAAMM].Vuelta) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura))"
+    Concat m_sSql, " INNER JOIN [03XXAAMM] ON ([02XXAAMM].IdTipoProcesoElectoral = [03XXAAMM].IdTipoProcesoElectoral) AND ([02XXAAMM].Año = [03XXAAMM].Año) AND ([02XXAAMM].Mes = [03XXAAMM].Mes))"
+    Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].Año = [10XXAAMM].Año) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([02XXAAMM].Vuelta = [10XXAAMM].Vuelta) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura))"
     Concat m_sSql, " INNER JOIN AUX_INE_Provincias ON [10XXAAMM].IdINEProvincia = AUX_INE_Provincias.IdINEProvincia"
     Concat m_sSql, " WHERE (([02XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(lIdTipoProcesoElectoral) & ")"
-    Concat m_sSql, " AND ([02XXAAMM].A�o = " & CSqlDbl(iA�o) & ")"
+    Concat m_sSql, " AND ([02XXAAMM].Año = " & CSqlDbl(iAño) & ")"
     Concat m_sSql, " AND ([02XXAAMM].Mes = " & CSqlDbl(iMes) & ")"
     Concat m_sSql, " AND ([02XXAAMM].Vuelta = " & CSqlDbl(iVuelta) & ")"
     Concat m_sSql, " AND ([10XXAAMM].IdINEProvincia = " & CSqlDbl(iIdINEProvincia) & "))"
     Concat m_sSql, " GROUP BY [02XXAAMM].IdTipoProcesoElectoral,"
-    Concat m_sSql, " [02XXAAMM].A�o,"
+    Concat m_sSql, " [02XXAAMM].Año,"
     Concat m_sSql, " [02XXAAMM].Mes,"
     Concat m_sSql, " [02XXAAMM].Vuelta,"
     Concat m_sSql, " Format([02XXAAMM].FechaProcesoElectoral, 'yyyy\ ') & Format([02XXAAMM].FechaProcesoElectoral, 'dd') & Left(UCase(Format([02XXAAMM].FechaProcesoElectoral, 'mmm')), 1),"
@@ -530,7 +545,7 @@ Public Function Exportar_Resultados_Candidaturas_por_Provincia_A_Excel(ByVal lId
         ' 3. Generamos la tabla temporal con los resultados de las candidaturas por mesa electoral
         m_sSql = "SELECT"
         Concat m_sSql, " [02XXAAMM].IdTipoProcesoElectoral,"
-        Concat m_sSql, " [02XXAAMM].A�o,"
+        Concat m_sSql, " [02XXAAMM].Año,"
         Concat m_sSql, " [02XXAAMM].Mes,"
         Concat m_sSql, " [02XXAAMM].Vuelta,"
         Concat m_sSql, " [09XXAAMM].IdINEComunidadAutonoma,"
@@ -556,11 +571,11 @@ Public Function Exportar_Resultados_Candidaturas_por_Provincia_A_Excel(ByVal lId
         Wend
         Concat m_sSql, " INTO TMP_Resultados_Candidaturas_por_Mesa_Electoral"
         Concat m_sSql, " FROM (([02XXAAMM]"
-        Concat m_sSql, " INNER JOIN [09XXAAMM] ON ([02XXAAMM].IdTipoProcesoElectoral = [09XXAAMM].IdTipoProcesoElectoral) AND ([02XXAAMM].A�o = [09XXAAMM].A�o) AND ([02XXAAMM].Mes = [09XXAAMM].Mes) AND ([02XXAAMM].Vuelta = [09XXAAMM].Vuelta))"
+        Concat m_sSql, " INNER JOIN [09XXAAMM] ON ([02XXAAMM].IdTipoProcesoElectoral = [09XXAAMM].IdTipoProcesoElectoral) AND ([02XXAAMM].Año = [09XXAAMM].Año) AND ([02XXAAMM].Mes = [09XXAAMM].Mes) AND ([02XXAAMM].Vuelta = [09XXAAMM].Vuelta))"
         Concat m_sSql, " INNER JOIN AUX_INE_Municipios ON ([09XXAAMM].IdINEComunidadAutonoma = AUX_INE_Municipios.IdINEComunidadAutonoma) AND ([09XXAAMM].IdINEProvincia = AUX_INE_Municipios.IdINEProvincia) AND ([09XXAAMM].IdINEMunicipio = AUX_INE_Municipios.IdINEMunicipio))"
         Concat m_sSql, " INNER JOIN AUX_INE_Provincias ON (AUX_INE_Provincias.IdINEComunidadAutonoma = AUX_INE_Municipios.IdINEComunidadAutonoma) AND (AUX_INE_Provincias.IdINEProvincia = AUX_INE_Municipios.IdINEProvincia)"
         Concat m_sSql, " WHERE (([02XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(lIdTipoProcesoElectoral) & ")"
-        Concat m_sSql, " AND ([02XXAAMM].A�o = " & CSqlDbl(iA�o) & ")"
+        Concat m_sSql, " AND ([02XXAAMM].Año = " & CSqlDbl(iAño) & ")"
         Concat m_sSql, " AND ([02XXAAMM].Mes = " & CSqlDbl(iMes) & ")"
         Concat m_sSql, " AND ([02XXAAMM].Vuelta = " & CSqlDbl(iVuelta) & ")"
         Concat m_sSql, " AND ([09XXAAMM].IdINEProvincia = " & CSqlDbl(iIdINEProvincia) & ")"
@@ -577,15 +592,15 @@ Public Function Exportar_Resultados_Candidaturas_por_Provincia_A_Excel(ByVal lId
         While Not m_Rst.EOF
             m_sSql = "UPDATE ([10XXAAMM]"
             Concat m_sSql, " INNER JOIN [03XXAAMM] ON ([10XXAAMM].IdTipoProcesoElectoral = [03XXAAMM].IdTipoProcesoElectoral)"
-            Concat m_sSql, " AND ([10XXAAMM].A�o = [03XXAAMM].A�o)"
+            Concat m_sSql, " AND ([10XXAAMM].Año = [03XXAAMM].Año)"
             Concat m_sSql, " AND ([10XXAAMM].Mes = [03XXAAMM].Mes)"
             Concat m_sSql, " AND ([10XXAAMM].IdCandidatura = [03XXAAMM].IdCandidatura))"
-            Concat m_sSql, " INNER JOIN TMP_Resultados_Candidaturas_por_Mesa_Electoral ON ([10XXAAMM].IdTipoProcesoElectoral = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdTipoProcesoElectoral) AND ([10XXAAMM].A�o = TMP_Resultados_Candidaturas_por_Mesa_Electoral.A�o) AND ([10XXAAMM].Mes = TMP_Resultados_Candidaturas_por_Mesa_Electoral.Mes) AND ([10XXAAMM].Vuelta = TMP_Resultados_Candidaturas_por_Mesa_Electoral.Vuelta) AND ([10XXAAMM].IdINEComunidadAutonoma = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdINEComunidadAutonoma) AND ([10XXAAMM].IdINEProvincia = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdINEProvincia) AND ([10XXAAMM].IdINEMunicipio = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdINEMunicipio) AND ([10XXAAMM].IdDistritoMunicipal = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdDistritoMunicipal) AND ([10XXAAMM].IdSeccion = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdSeccion) AND ([10XXAAMM].IdMesa = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdMesa)"
+            Concat m_sSql, " INNER JOIN TMP_Resultados_Candidaturas_por_Mesa_Electoral ON ([10XXAAMM].IdTipoProcesoElectoral = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdTipoProcesoElectoral) AND ([10XXAAMM].Año = TMP_Resultados_Candidaturas_por_Mesa_Electoral.Año) AND ([10XXAAMM].Mes = TMP_Resultados_Candidaturas_por_Mesa_Electoral.Mes) AND ([10XXAAMM].Vuelta = TMP_Resultados_Candidaturas_por_Mesa_Electoral.Vuelta) AND ([10XXAAMM].IdINEComunidadAutonoma = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdINEComunidadAutonoma) AND ([10XXAAMM].IdINEProvincia = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdINEProvincia) AND ([10XXAAMM].IdINEMunicipio = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdINEMunicipio) AND ([10XXAAMM].IdDistritoMunicipal = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdDistritoMunicipal) AND ([10XXAAMM].IdSeccion = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdSeccion) AND ([10XXAAMM].IdMesa = TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdMesa)"
             Concat m_sSql, " SET TMP_Resultados_Candidaturas_por_Mesa_Electoral.[Campo_" & m_Rst!IdCandidatura & "] = [10XXAAMM].VotosObtenidos"
             Concat m_sSql, " WHERE (([10XXAAMM].IdINEProvincia <> 99)"
             Concat m_sSql, " AND ([10XXAAMM].IdINEMunicipio <> 999)"
             Concat m_sSql, " AND ([10XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(lIdTipoProcesoElectoral) & ")"
-            Concat m_sSql, " AND ([10XXAAMM].A�o = " & CSqlDbl(iA�o) & ")"
+            Concat m_sSql, " AND ([10XXAAMM].Año = " & CSqlDbl(iAño) & ")"
             Concat m_sSql, " AND ([10XXAAMM].Mes = " & CSqlDbl(iMes) & ")"
             Concat m_sSql, " AND ([10XXAAMM].Vuelta = " & CSqlDbl(iVuelta) & ")"
             Concat m_sSql, " AND ([10XXAAMM].IdINEProvincia = " & CSqlDbl(iIdINEProvincia) & ")"
@@ -618,7 +633,7 @@ Public Function Exportar_Resultados_Candidaturas_por_Provincia_A_Excel(ByVal lId
         Wend
         Concat m_sSql, " FROM TMP_Resultados_Candidaturas_por_Mesa_Electoral"
         Concat m_sSql, " WHERE ((TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdTipoProcesoElectoral = " & CSqlDbl(lIdTipoProcesoElectoral) & ")"
-        Concat m_sSql, " AND (TMP_Resultados_Candidaturas_por_Mesa_Electoral.A�o = " & CSqlDbl(iA�o) & ")"
+        Concat m_sSql, " AND (TMP_Resultados_Candidaturas_por_Mesa_Electoral.Año = " & CSqlDbl(iAño) & ")"
         Concat m_sSql, " AND (TMP_Resultados_Candidaturas_por_Mesa_Electoral.Mes = " & CSqlDbl(iMes) & ")"
         Concat m_sSql, " AND (TMP_Resultados_Candidaturas_por_Mesa_Electoral.Vuelta = " & CSqlDbl(iVuelta) & ")"
         Concat m_sSql, " AND (TMP_Resultados_Candidaturas_por_Mesa_Electoral.IdINEProvincia = " & CSqlDbl(iIdINEProvincia) & "))"
