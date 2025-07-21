@@ -1,3 +1,19 @@
+' ---------------------------------------------------------------
+' Clase: clsTemplates
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' Descripci√≥n:
+'   Clase auxiliar para aplicar plantillas de formato a documentos
+'   Excel generados desde el sistema. Permite definir estilos,
+'   encabezados, bordes, colores, filtros y sumatorios autom√°ticos.
+'
+'   ‚ö†Ô∏è Esta clase no contiene l√≥gica de negocio ni interacci√≥n directa.
+'   Su prop√≥sito es t√©cnico: enriquecer los informes exportados
+'   con formato profesional y coherente.
+'
+' Fecha: [a√±adir fecha]
+' ---------------------------------------------------------------
+
 VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
@@ -7,12 +23,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'---------------------------------------------------------------------------------------
-' Module    : clsTemplates
-' DateTime  : 02/07/2008 16:22
-' Author    : Juan Francisco Cucharero Cabezas
-' Purpose   :
-'---------------------------------------------------------------------------------------
+
 Option Compare Database
 Option Explicit
 
@@ -78,7 +89,7 @@ Public Function CreateTableDefs(ByVal lIdtemplate As Long) As Boolean
                         m_Field.Required = True
                         .Fields.Append m_Field
 
-                        ' 4. Definimos el campo Ìndice de la tabla
+                        ' 4. Definimos el campo √≠ndice de la tabla
                         Set m_Index = .CreateIndex(dbKeyField & "Index")
                         With m_Index
                             .Fields.Append m_Index.CreateField(dbKeyField)
@@ -109,13 +120,13 @@ Public Function CreateTableDefs(ByVal lIdtemplate As Long) As Boolean
 
                     m_RstFields.MoveFirst
                     While Not m_RstFields.EOF
-                        ' 9. Si se definiÛ, agregamos al campo la propiedad "Description"
+                        ' 9. Si se defini√≥, agregamos al campo la propiedad "Description"
                         If Not IsNull(m_RstFields!Description) Then .TableDefs(m_RstRows!TableDef).Fields(m_RstFields!Name).Properties.Append .TableDefs(m_RstRows!TableDef).CreateProperty("Description", dbText, m_RstFields!Description)
 
-                        ' 10. Si se definiÛ, agregamos al campo la propiedad "Caption"
+                        ' 10. Si se defini√≥, agregamos al campo la propiedad "Caption"
                         If Not IsNull(m_RstFields!Caption) Then .TableDefs(m_RstRows!TableDef).Fields(m_RstFields!Name).Properties.Append .TableDefs(m_RstRows!TableDef).CreateProperty("Caption", dbText, m_RstFields!Caption)
 
-                        ' 11. Si se definiÛ, agregamos al campo la propiedad "Format"
+                        ' 11. Si se defini√≥, agregamos al campo la propiedad "Format"
                         If Not IsNull(m_RstFields!DBFormat) Then .TableDefs(m_RstRows!TableDef).Fields(m_RstFields!Name).Properties.Append .TableDefs(m_RstRows!TableDef).CreateProperty("Format", dbText, m_RstFields!DBFormat)
 
                         m_RstFields.MoveNext
@@ -124,7 +135,7 @@ Public Function CreateTableDefs(ByVal lIdtemplate As Long) As Boolean
                 End With
 
                 ' 12. Si no es la tabla principal, se relaciona con la principal,
-                '     permitiendo la actualizaciÛn en cascada
+                '     permitiendo la actualizaci√≥n en cascada
                 If Not m_RstRows!Key Then modMDB.SetRelation m_sParentTableDef, m_RstRows!TableDef, (dbKeyField & ":" & dbKeyField), (dbRelationUpdateCascade + dbRelationDeleteCascade)
             End If
             m_RstRows.MoveNext
@@ -166,7 +177,7 @@ Public Function CreateTemplateFile(ByVal lIdtemplate As Long, _
 
     On Error GoTo Error_CreateTemplateFile
 
-    ' 1. Si no se especificÛ una carpeta de destino
+    ' 1. Si no se especific√≥ una carpeta de destino
     If IsZrStr(sFolderPath) Then sFolderPath = modMDB.GetMDBPath("Plantillas")
 
     ' 2. Construimos la ruta de la carpeta si no existe
@@ -225,7 +236,7 @@ Public Function CreateTemplateFile(ByVal lIdtemplate As Long, _
             Set m_RstFields = CurrentDb.OpenRecordset(m_sSql)
             If modMDB.IsRst(m_RstFields) Then
                 While Not m_RstFields.EOF
-                    ' 10. Agregamos el nodo de definiciÛn del campo
+                    ' 10. Agregamos el nodo de definici√≥n del campo
                     m_Xml.documentElement.lastChild.appendChild CreateObject("MSXML2.DOMDocument").createElement("Field")
 
                     ' 11. Agregamos los atributos del campo
@@ -461,7 +472,7 @@ Private Function GetValue(ByVal oNode As Object, _
 
     On Error GoTo Error_GetValue
 
-    ' 1. Obtenemos las caracterÌsticas del campo cuyo valor se va a obtener
+    ' 1. Obtenemos las caracter√≠sticas del campo cuyo valor se va a obtener
     m_sName = GetXMLAttribute(oNode, "Name")
     m_iType = CInt(GetXMLAttribute(oNode, "Type"))
     m_sSize = GetXMLAttribute(oNode, "Length")
@@ -470,7 +481,7 @@ Private Function GetValue(ByVal oNode As Object, _
     m_sDescription = GetXMLAttribute(oNode, "Description")
     m_sCaption = GetXMLAttribute(oNode, "Caption")
 
-    ' 2. Si se ha definido un tamaÒo de campo
+    ' 2. Si se ha definido un tama√±o de campo
     If Not IsZrStr(m_sSize) Then
         m_sLength = Split(m_sSize, ",")
         Select Case UBound(m_sLength)
@@ -493,7 +504,7 @@ Private Function GetValue(ByVal oNode As Object, _
                  dbCurrency, _
                  dbSingle, _
                  dbDouble
-                ' 4. Si el tipo del campo es numÈrico
+                ' 4. Si el tipo del campo es num√©rico
                 If modSystem.EvalStr(m_sValue, "[0-9\.0-9]") Then
                     m_sValue = Replace(m_sValue, ".", vbNullString)
                     m_lX = IIf(IsZr(InStr(1, m_sValue, "-")), 1, InStr(1, m_sValue, "-"))
@@ -535,7 +546,7 @@ Error_GetValue:
     Else
         Dim m_szDebug As String
 
-        ' 5. Obtenemos los datos de depuraciÛn
+        ' 5. Obtenemos los datos de depuraci√≥n
         m_szDebug = "Name=" & m_sName
         If Not IsZrStr(m_sDescription) Then Concat m_szDebug, vbCrLf & "Description=" & m_sDescription
         If Not IsZrStr(m_sCaption) Then Concat m_szDebug, vbCrLf & "Caption=" & m_sCaption
@@ -549,7 +560,7 @@ Error_GetValue:
     End If
 End Function
 
-' MÈtodo para obtener el valor de un atributo de un Nodo de XML.
+' M√©todo para obtener el valor de un atributo de un Nodo de XML.
 Public Function GetXMLAttribute(ByVal xmlNode As Object, _
                                 ByVal sAttributeName As String) As String
     On Error GoTo Error_GetXMLAttribute
@@ -585,31 +596,31 @@ Public Function ImportFile(ByVal lIdtemplate As Long, _
 
     m_sTemplatePath = (modMDB.GetMDBPath("Plantillas") & GetFileName(lIdtemplate))
 
-    ' 1. Comprobamos que exista la plantilla de importaciÛn
-    If Not modSystem.FileExists(m_sTemplatePath) Then Err.Raise (vbObjectError + 101), GetMDBName, "No se encuentra la plantilla de importaciÛn [" & m_sTemplatePath & "]."
+    ' 1. Comprobamos que exista la plantilla de importaci√≥n
+    If Not modSystem.FileExists(m_sTemplatePath) Then Err.Raise (vbObjectError + 101), GetMDBName, "No se encuentra la plantilla de importaci√≥n [" & m_sTemplatePath & "]."
 
     ' 2. Obtenemos el contenido del fichero a importar
     m_sDoc = modSystem.ReadFile(sFilePath, IIf((lCharCode = enumCharcode.CdoSystemASCII), enumCharcode.CdoISO_8859_1, lCharCode))
 
-    ' 3. Si el fichero no est· vacÌo
+    ' 3. Si el fichero no est√° vac√≠o
     If Not IsZrStr(m_sDoc) Then
-        ' 4. Establecemos las lÌneas de datos del fichero
+        ' 4. Establecemos las l√≠neas de datos del fichero
         m_sLines = Split(m_sDoc, vbCrLf)
 
-        ' 5. Si el salto de lÌnea no corresponde con Windows (CR LF)
-        If Not IsZrStr(m_sDoc) And IsZr(UBound(m_sLines)) Then Err.Raise (vbObjectError + 101), modMDB.GetMDBName(), "El fichero [" & modSystem.GetFileFullName(sFilePath) & "] no tiene est· codificado para el salto de lÌnea de Windows. Utilice Notepad++ para cambiar la codificaciÛn del salto de lÌnea a Windows (CR LF)."
+        ' 5. Si el salto de l√≠nea no corresponde con Windows (CR LF)
+        If Not IsZrStr(m_sDoc) And IsZr(UBound(m_sLines)) Then Err.Raise (vbObjectError + 101), modMDB.GetMDBName(), "El fichero [" & modSystem.GetFileFullName(sFilePath) & "] no tiene est√° codificado para el salto de l√≠nea de Windows. Utilice Notepad++ para cambiar la codificaci√≥n del salto de l√≠nea a Windows (CR LF)."
 
         ' 6. Abrimos el formulario de Progreso y le damos formato a la barra de estado
         If bUseProgressBar Then modMDB.SetProgressBar 0, UBound(m_sLines), IIf(IsZrStr(sProgressBarCaption), "Obteniendo datos del fichero seleccionado.", sProgressBarCaption)
 
-        ' 7. Obtenemos la plantilla de importaciÛn
+        ' 7. Obtenemos la plantilla de importaci√≥n
         Set m_Xml = CreateObject("MSXML2.DOMDocument")
         m_Xml.Load m_sTemplatePath
         m_sParentTableDef = GetRowKeyTableDef(m_Xml)
 
         ' 8. Recorremos el contenido del fichero
         For m_iLine = LBound(m_sLines) To UBound(m_sLines)
-            ' 9. Importamos cada lÌnea a la tabla temporal correspondiente
+            ' 9. Importamos cada l√≠nea a la tabla temporal correspondiente
             Set m_Row = GetRowNode(m_Xml, Left(m_sLines(m_iLine), 2))
             If Not m_Row Is Nothing Then
                 m_sSql = "INSERT INTO "
@@ -665,7 +676,7 @@ End Function
 Public Function TemplateExists(ByVal lIdtemplate As Long) As Boolean
     On Error GoTo Error_TemplateExists
 
-    ' Se comprueba que existan las tablas temporales de importaciÛn en la base de datos,
+    ' Se comprueba que existan las tablas temporales de importaci√≥n en la base de datos,
     ' y que exista la plantilla XML. En caso contrario se crean.
     TemplateExists = (CreateTableDefs(lIdtemplate) And CreateTemplateFile(lIdtemplate))
 
