@@ -1,3 +1,21 @@
+' ---------------------------------------------------------------
+' Colecci贸n: colDocProperties
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' Descripci贸n:
+'   Colecci贸n personalizada que agrupa objetos tipo `clsDocProperty`,
+'   permitiendo gestionar m煤ltiples propiedades de documento de forma
+'   ordenada y reutilizable. Se utiliza principalmente durante la
+'   exportaci贸n a Excel para a帽adir metadatos como autor, proceso,
+'   fecha, versi贸n, etc.
+'
+'   鈿狅笍 Esta colecci贸n no contiene l贸gica de negocio ni interacci贸n directa.
+'   Su prop贸sito es t茅cnico: facilitar la manipulaci贸n masiva de
+'   propiedades de documento mediante m茅todos centralizados.
+'
+' Fecha: [a帽adir fecha]
+' ---------------------------------------------------------------
+
 VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
@@ -68,7 +86,7 @@ Error_Add:
     GetError Me.ClassName & ".Add"
 End Function
 
-' M閠odo para limpiar la colecci髇 de todos sus elementos
+' M茅todo para limpiar la colecci贸n de todos sus elementos
 Public Function Clear() As Boolean
     Dim m_lCountItem      As Long
     Dim m_lIdx            As Long
@@ -87,7 +105,7 @@ Error_Clear:
     GetError Me.ClassName & ".Clear"
 End Function
 
-' Funci髇 para validar si existe un elemento en la colecci髇
+' Funci贸n para validar si existe un elemento en la colecci贸n
 Public Function Exists(ByVal vData As String) As Boolean
     Dim m_lIdx            As Long
 
