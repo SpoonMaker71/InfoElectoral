@@ -1,7 +1,8 @@
 📘 Proyecto: InfoElectoral AccessVBA
 
-🗳️ Descripción
-Aplicación desarrollada en Microsoft Access + VBA para importar, consultar, analizar y exportar los microdatos de resultados electorales publicados por el Ministerio del Interior (Infoelectoral). Permite realizar estudios por mesa electoral, aplicar el sistema D’Hondt y generar informes en Excel con formato avanzado.
+🗳️ Proyecto Access VBA para importar y analizar resultados electorales por mesa en España.
+Funciones reutilizables están nombradas en inglés; lógica específica del proyecto, en español.
+Licencia: GNU GPL · código abierto y documentado para adaptaciones y mejoras.
 
 🚀 Características principales
 - 🔽 Importación automática de ficheros ZIP desde Infoelectoral.
