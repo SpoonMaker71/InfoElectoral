@@ -1,3 +1,20 @@
+' ---------------------------------------------------------------
+' Subformulario: Form_(Subform) Mesas Electorales por Municipio
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' Descripción:
+'   Subformulario vinculado al formulario principal de consulta
+'   que muestra el listado de mesas electorales pertenecientes
+'   al municipio seleccionado. Permite visualizar datos clave
+'   como número de mesa, sección, distrito, censo y participación.
+'
+'   ⚠️ Este subformulario no contiene lógica de navegación ni
+'   cálculos analíticos. Su propósito es mostrar datos filtrados
+'   y permitir interacción indirecta con otros formularios.
+'
+' Fecha: [añadir fecha]
+' ---------------------------------------------------------------
+
 VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
@@ -11,25 +28,25 @@ Option Compare Database
 Option Explicit
 
 Public Sub Form_Click()
-    ' 1. Si est� cargado el formulario padre
+    ' 1. Si está cargado el formulario padre
     If modMDB.IsLoaded("(Form) Consulta de resultados electorales por mesa") Then
         Dim m_sSql          As String
 
         With Forms("(Form) Consulta de resultados electorales por mesa").Form
-            ' 2. Construimos el t�tulo del subformulario
-            .sfResultadosCandidaturas_Etiqueta.Caption = "Resultados de candidaturas - Distrito: " & IdDistritoMunicipal.Value & " - Secci�n: " & IdSeccion.Value & " - Mesa: " & IdMesa.Value
+            ' 2. Construimos el título del subformulario
+            .sfResultadosCandidaturas_Etiqueta.Caption = "Resultados de candidaturas - Distrito: " & IdDistritoMunicipal.Value & " - Sección: " & IdSeccion.Value & " - Mesa: " & IdMesa.Value
 
-            ' 3. Si se notific� el acta, mostramos el mensaje en el formulario
+            ' 3. Si se notificó el acta, mostramos el mensaje en el formulario
             With .ActaNotificada_Etiqueta
                 .Visible = ActaNotificada.Value
 
                 If ActaNotificada.Value Then
                     .ForeColor = IIf(Correcta.Value, RGB(34, 177, 76), RGB(250, 0, 0))
-                    .Caption = "Notificada como " & IIf(Correcta.Value, "correcta", "err�nea")
+                    .Caption = "Notificada como " & IIf(Correcta.Value, "correcta", "errónea")
                 End If
             End With
 
-            ' 4. Si no se notific� el acta, mostramos el bot�n de notificar
+            ' 4. Si no se notificó el acta, mostramos el botón de notificar
             .cmdNotificarRevisionActa.Visible = (Not ActaNotificada.Value)
             DoEvents
 
@@ -40,9 +57,9 @@ Public Sub Form_Click()
                 Concat m_sSql, " [03XXAAMM].Denominacion,"
                 Concat m_sSql, " [10XXAAMM].VotosObtenidos"
                 Concat m_sSql, " FROM [03XXAAMM]"
-                Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].A�o = [10XXAAMM].A�o) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
+                Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].Año = [10XXAAMM].Año) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
                 Concat m_sSql, " WHERE (([10XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(.cboTipoProcesoElectoral.Value) & ")"
-                Concat m_sSql, " AND ([10XXAAMM].A�o = " & CSqlDbl(.cboProcesoElectoral.Column(1)) & ")"
+                Concat m_sSql, " AND ([10XXAAMM].Año = " & CSqlDbl(.cboProcesoElectoral.Column(1)) & ")"
                 Concat m_sSql, " AND ([10XXAAMM].Mes = " & CSqlDbl(.cboProcesoElectoral.Column(2)) & ")"
                 Concat m_sSql, " AND ([10XXAAMM].IdINEProvincia = " & CSqlDbl(.cboProvincia.Value) & ")"
                 Concat m_sSql, " AND ([10XXAAMM].IdINEMunicipio = " & CSqlDbl(.cboMunicipio.Value) & ")"
