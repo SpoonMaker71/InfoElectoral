@@ -1,3 +1,20 @@
+' ---------------------------------------------------------------
+' Formulario: Form_(Form) Consulta de resultados electorales por Mesa
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' Descripci√≥n:
+'   Formulario principal para visualizar, explorar y analizar los
+'   resultados electorales por mesa. Permite navegaci√≥n jer√°rquica
+'   por comunidad, provincia, municipio y mesa, as√≠ como comparaci√≥n
+'   de datos, validaci√≥n de actas y exportaci√≥n de informes.
+'
+'   ‚ö†Ô∏è Este formulario contiene la l√≥gica interactiva del sistema:
+'   confirmaciones, validaciones, navegaci√≥n, visualizaci√≥n y control
+'   de flujo entre m√≥dulos.
+'
+' Fecha: [a√±adir fecha]
+' ---------------------------------------------------------------
+
 VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
@@ -16,11 +33,11 @@ Private Const cteRightPane_Left     As Long = 9075
 Private Sub cboComunidadAutonoma_Change()
     cboProvincia.Value = Null
 
-    ' 1. Si se ha seleccionado una comunidad autÛnoma
+    ' 1. Si se ha seleccionado una comunidad aut√≥noma
     If (cboComunidadAutonoma.ListIndex <> -1) Then
         Dim m_sSql          As String
 
-        ' 2. Consultamos la lista de provincias de la comunidad autÛnoma
+        ' 2. Consultamos la lista de provincias de la comunidad aut√≥noma
         m_sSql = "SELECT"
         Concat m_sSql, " AUX_INE_Provincias.IdINEProvincia,"
         Concat m_sSql, " AUX_INE_Provincias.Nombre"
@@ -40,7 +57,7 @@ Private Sub cboComunidadAutonoma_Change()
         cboProvincia.RowSource = vbNullString
     End If
 
-    ' 6. Bloqueamos el control si solo hay una provincia en la comunidad autÛnoma
+    ' 6. Bloqueamos el control si solo hay una provincia en la comunidad aut√≥noma
     modMDB.LockControl cboProvincia, (cboProvincia.ListCount = 1)
 
     ' 7. Llamamos al evento de cambio de valor del combo de provincias
@@ -101,7 +118,7 @@ Private Sub cboProvincia_Change()
         .Form.RecordSource = vbNullString
     End With
 
-    ' 9. ocultamos el botÛn de notificaciÛn del resultado de revisiÛn de acta
+    ' 9. ocultamos el bot√≥n de notificaci√≥n del resultado de revisi√≥n de acta
     cmdExportarExcel.Visible = False
     cmdNotificarRevisionActa.Visible = False
     ActaNotificada_Etiqueta.Visible = False
@@ -120,13 +137,13 @@ Private Sub cboTipoProcesoElectoral_Change()
         ' 1. Consultamos la lista de procesos electorales del tipo indicado
         m_sSql = "SELECT"
         Concat m_sSql, " Format([02XXAAMM].FechaProcesoElectoral, 'yyyymmff') AS Id,"
-        Concat m_sSql, " [02XXAAMM].AÒo,"
+        Concat m_sSql, " [02XXAAMM].A√±o,"
         Concat m_sSql, " [02XXAAMM].Mes,"
         Concat m_sSql, " Format([02XXAAMM].FechaProcesoElectoral, 'yyyy\ ') & Format([02XXAAMM].FechaProcesoElectoral, 'dd') & Left(UCase(Format([02XXAAMM].FechaProcesoElectoral, 'mmm')), 1) AS Titulo,"
         Concat m_sSql, " UCase(Format([02XXAAMM].FechaProcesoElectoral,'mmmm yyyy')) AS ProcesoElectoral"
         Concat m_sSql, " FROM 02XXAAMM"
         Concat m_sSql, " WHERE ([02XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Column(0)) & ")"
-        Concat m_sSql, " ORDER BY [02XXAAMM].AÒo,"
+        Concat m_sSql, " ORDER BY [02XXAAMM].A√±o,"
         Concat m_sSql, " [02XXAAMM].Mes;"
         With cboProcesoElectoral
             .Value = Null
@@ -149,17 +166,17 @@ Private Sub cmdEscrutinio_Click()
     Dim m_sSql          As String
     Dim m_Rst           As Recordset
 
-    ' 1. Comprobamos si ya est· realizado el escrutinio para el resultado electoral
+    ' 1. Comprobamos si ya est√° realizado el escrutinio para el resultado electoral
     m_sSql = "SELECT"
-    Concat m_sSql, " Nz(Sum(RES_EscaÒos_Escrutinio.EscaÒo), 0) AS TotalEscaÒos"
-    Concat m_sSql, " FROM RES_EscaÒos_Escrutinio"
-    Concat m_sSql, " WHERE ((RES_EscaÒos_Escrutinio.IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Column(0)) & ")"
-    Concat m_sSql, " AND (RES_EscaÒos_Escrutinio.AÒo = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
-    Concat m_sSql, " AND (RES_EscaÒos_Escrutinio.Mes = " & CSqlDbl(cboProcesoElectoral.Column(2)) & "));"
+    Concat m_sSql, " Nz(Sum(RES_Esca√±os_Escrutinio.Esca√±o), 0) AS TotalEsca√±os"
+    Concat m_sSql, " FROM RES_Esca√±os_Escrutinio"
+    Concat m_sSql, " WHERE ((RES_Esca√±os_Escrutinio.IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Column(0)) & ")"
+    Concat m_sSql, " AND (RES_Esca√±os_Escrutinio.A√±o = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
+    Concat m_sSql, " AND (RES_Esca√±os_Escrutinio.Mes = " & CSqlDbl(cboProcesoElectoral.Column(2)) & "));"
     Set m_Rst = CurrentDb.OpenRecordset(m_sSql)
     If modMDB.IsRst(m_Rst, True) Then
-        ' 2. Si no est· hecho el escrutinio, lo calculamos
-        If IsZr(m_Rst!TotalEscaÒos) Then modGlobal.ProcesarEscrutinio cboTipoProcesoElectoral.Column(0), cboProcesoElectoral.Column(1), cboProcesoElectoral.Column(2), , True
+        ' 2. Si no est√° hecho el escrutinio, lo calculamos
+        If IsZr(m_Rst!TotalEsca√±os) Then modGlobal.ProcesarEscrutinio cboTipoProcesoElectoral.Column(0), cboProcesoElectoral.Column(1), cboProcesoElectoral.Column(2), , True
 
         ' 3. Abrimos el formulario para visualizar el escrutinio
         modMDB.OpenForm "(Form) Resultados Escrutinio"
@@ -174,7 +191,7 @@ Private Sub cmdConsultar_Click()
         ' 2. Construimos la consulta para obtener el listado de mesas elctorales de dicho municipio
         m_sSql = "SELECT"
         Concat m_sSql, " [09XXAAMM].IdTipoProcesoElectoral,"
-        Concat m_sSql, " [09XXAAMM].AÒo,"
+        Concat m_sSql, " [09XXAAMM].A√±o,"
         Concat m_sSql, " [09XXAAMM].Mes,"
         Concat m_sSql, " [09XXAAMM].IdINEComunidadAutonoma,"
         Concat m_sSql, " [09XXAAMM].IdINEProvincia,"
@@ -192,7 +209,7 @@ Private Sub cmdConsultar_Click()
         Concat m_sSql, " [09XXAAMM].Incidencia"
         Concat m_sSql, " FROM [09XXAAMM]"
         Concat m_sSql, " WHERE (([09XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Value) & ")"
-        Concat m_sSql, " AND ([09XXAAMM].AÒo = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
+        Concat m_sSql, " AND ([09XXAAMM].A√±o = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
         Concat m_sSql, " AND ([09XXAAMM].Mes = " & CSqlDbl(cboProcesoElectoral.Column(2)) & ")"
         Concat m_sSql, " AND ([09XXAAMM].IdINEProvincia = " & CSqlDbl(cboProvincia.Value) & ")"
         Concat m_sSql, " AND ([09XXAAMM].IdINEMunicipio = " & CSqlDbl(cboMunicipio.Value) & "))"
@@ -209,7 +226,7 @@ Private Sub cmdConsultar_Click()
             ' 4. Mostramos el subformulario si se han obtenido mesas electorales para el municipio
             .Visible = (Not .Form.Recordset Is Nothing)
 
-            ' 5. ocultamos el botÛn de notificaciÛn del resultado de revisiÛn de acta
+            ' 5. ocultamos el bot√≥n de notificaci√≥n del resultado de revisi√≥n de acta
             cmdExportarExcel.Visible = False
             cmdNotificarRevisionActa.Visible = False
             ActaNotificada_Etiqueta.Visible = False
@@ -234,17 +251,17 @@ Private Sub cmdConsultar_Click()
         End With
 
         With sfResultadosCandidaturas_Etiqueta
-            ' 9. Si no se ha indicado comunidad autÛnoma, provincia o municipio,
+            ' 9. Si no se ha indicado comunidad aut√≥noma, provincia o municipio,
             '    asumimos que son los resultados a nivel nacional
             If ((cboComunidadAutonoma.ListIndex = -1) And (cboProvincia.ListIndex = -1)) Then
                 .Caption = "Resultados de candidaturas - Total Nacional"
 
-            ' 10. Si es por comunidad autÛnoma
+            ' 10. Si es por comunidad aut√≥noma
             ElseIf ((cboComunidadAutonoma.ListIndex <> -1) And (cboProvincia.ListIndex = -1) And (cboMunicipio.ListIndex = -1)) Or _
                    ((cboComunidadAutonoma.ListIndex <> -1) And (cboProvincia.ListIndex <> -1) And cboProvincia.Locked And (cboMunicipio.ListIndex = -1)) Then
-                .Caption = "Resultados de candidaturas - Comunidad autÛnoma: " & cboComunidadAutonoma.Column(1)
+                .Caption = "Resultados de candidaturas - Comunidad aut√≥noma: " & cboComunidadAutonoma.Column(1)
 
-            ' 11. Si es por provincia/circunscripciÛn
+            ' 11. Si es por provincia/circunscripci√≥n
             ElseIf ((cboComunidadAutonoma.ListIndex <> -1) And (cboProvincia.ListIndex <> -1) And (cboMunicipio.ListIndex = -1)) Then
                 .Caption = "Resultados de candidaturas - Provincia: " & cboProvincia.Column(1)
                 
@@ -253,12 +270,12 @@ Private Sub cmdConsultar_Click()
                 .Caption = "Resultados de candidaturas - Municipio: " & cboMunicipio.Column(1)
             End If
 
-            ' 13. Construimos y posicionamos el tÌtulo del subformulario
+            ' 13. Construimos y posicionamos el t√≠tulo del subformulario
             .Left = cteLeftPane_Left
         End With
         DoEvents
 
-        ' 14. Si no se ha indicado comunidad autÛnoma, provincia o municipio,
+        ' 14. Si no se ha indicado comunidad aut√≥noma, provincia o municipio,
         '     asumimos que son los resultados a nivel nacional
         If ((cboComunidadAutonoma.ListIndex = -1) And (cboProvincia.ListIndex = -1) And (cboMunicipio.ListIndex = -1)) Then
             m_sSql = "SELECT"
@@ -268,23 +285,23 @@ Private Sub cmdConsultar_Click()
             Concat m_sSql, " FROM [03XXAAMM]"
             Concat m_sSql, " INNER JOIN (SELECT"
             Concat m_sSql, " [03XXAAMM].IdTipoProcesoElectoral,"
-            Concat m_sSql, " [03XXAAMM].AÒo,"
+            Concat m_sSql, " [03XXAAMM].A√±o,"
             Concat m_sSql, " [03XXAAMM].Mes,"
             Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelNacional AS IdCandidatura,"
             Concat m_sSql, " Sum([10XXAAMM].VotosObtenidos) As VotosObtenidos"
             Concat m_sSql, " FROM [03XXAAMM]"
-            Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = [10XXAAMM].AÒo) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
+            Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = [10XXAAMM].A√±o) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
             Concat m_sSql, " WHERE (([10XXAAMM].IdINEProvincia <> 99)"
             Concat m_sSql, " AND([10XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Value) & ")"
-            Concat m_sSql, " AND ([10XXAAMM].AÒo = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
+            Concat m_sSql, " AND ([10XXAAMM].A√±o = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
             Concat m_sSql, " AND ([10XXAAMM].Mes = " & CSqlDbl(cboProcesoElectoral.Column(2)) & "))"
             Concat m_sSql, " GROUP BY [03XXAAMM].IdTipoProcesoElectoral,"
-            Concat m_sSql, " [03XXAAMM].AÒo,"
+            Concat m_sSql, " [03XXAAMM].A√±o,"
             Concat m_sSql, " [03XXAAMM].Mes,"
-            Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelNacional) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = TMP.AÒo) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
+            Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelNacional) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = TMP.A√±o) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
             Concat m_sSql, " ORDER BY TMP.VotosObtenidos DESC;"
 
-        ' 15. Si es por comunidad autÛnoma
+        ' 15. Si es por comunidad aut√≥noma
         ElseIf ((cboComunidadAutonoma.ListIndex <> -1) And ((cboProvincia.ListCount = 1) Or (cboProvincia.ListIndex = -1)) And (cboMunicipio.ListIndex = -1)) Then
             m_sSql = "SELECT"
             Concat m_sSql, " [03XXAAMM].Siglas,"
@@ -293,24 +310,24 @@ Private Sub cmdConsultar_Click()
             Concat m_sSql, " FROM [03XXAAMM]"
             Concat m_sSql, " INNER JOIN (SELECT"
             Concat m_sSql, " [03XXAAMM].IdTipoProcesoElectoral,"
-            Concat m_sSql, " [03XXAAMM].AÒo,"
+            Concat m_sSql, " [03XXAAMM].A√±o,"
             Concat m_sSql, " [03XXAAMM].Mes,"
             Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelAutonomico AS IdCandidatura,"
             Concat m_sSql, " Sum([10XXAAMM].VotosObtenidos) As VotosObtenidos"
             Concat m_sSql, " FROM [03XXAAMM]"
-            Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = [10XXAAMM].AÒo) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
+            Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = [10XXAAMM].A√±o) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
             Concat m_sSql, " WHERE (([10XXAAMM].IdINEProvincia <> 99)"
             Concat m_sSql, " AND([10XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Value) & ")"
-            Concat m_sSql, " AND ([10XXAAMM].AÒo = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
+            Concat m_sSql, " AND ([10XXAAMM].A√±o = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
             Concat m_sSql, " AND ([10XXAAMM].Mes = " & CSqlDbl(cboProcesoElectoral.Column(2)) & ")"
             Concat m_sSql, " AND ([10XXAAMM].IdINEComunidadAutonoma = " & CSqlDbl(cboComunidadAutonoma.Value) & "))"
             Concat m_sSql, " GROUP BY [03XXAAMM].IdTipoProcesoElectoral,"
-            Concat m_sSql, " [03XXAAMM].AÒo,"
+            Concat m_sSql, " [03XXAAMM].A√±o,"
             Concat m_sSql, " [03XXAAMM].Mes,"
-            Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelAutonomico) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = TMP.AÒo) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
+            Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelAutonomico) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = TMP.A√±o) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
             Concat m_sSql, " ORDER BY TMP.VotosObtenidos DESC;"
 
-        ' 16. Si es por provincia/circunscripciÛn
+        ' 16. Si es por provincia/circunscripci√≥n
         ElseIf ((cboComunidadAutonoma.ListIndex <> -1) And (cboProvincia.ListIndex <> -1) And (cboMunicipio.ListIndex = -1)) Then
             m_sSql = "SELECT"
             Concat m_sSql, " [03XXAAMM].Siglas,"
@@ -319,21 +336,21 @@ Private Sub cmdConsultar_Click()
             Concat m_sSql, " FROM [03XXAAMM]"
             Concat m_sSql, " INNER JOIN (SELECT"
             Concat m_sSql, " [03XXAAMM].IdTipoProcesoElectoral,"
-            Concat m_sSql, " [03XXAAMM].AÒo,"
+            Concat m_sSql, " [03XXAAMM].A√±o,"
             Concat m_sSql, " [03XXAAMM].Mes,"
             Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial AS IdCandidatura,"
             Concat m_sSql, " Sum([10XXAAMM].VotosObtenidos) AS VotosObtenidos"
             Concat m_sSql, " FROM [03XXAAMM]"
-            Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = [10XXAAMM].AÒo) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
+            Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = [10XXAAMM].A√±o) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
             Concat m_sSql, " WHERE (([10XXAAMM].IdINEProvincia <> 99)"
             Concat m_sSql, " AND([10XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Value) & ")"
-            Concat m_sSql, " AND ([10XXAAMM].AÒo = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
+            Concat m_sSql, " AND ([10XXAAMM].A√±o = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
             Concat m_sSql, " AND ([10XXAAMM].Mes = " & CSqlDbl(cboProcesoElectoral.Column(2)) & ")"
             Concat m_sSql, " AND ([10XXAAMM].IdINEProvincia = " & CSqlDbl(cboProvincia.Value) & "))"
             Concat m_sSql, " GROUP BY [03XXAAMM].IdTipoProcesoElectoral,"
-            Concat m_sSql, " [03XXAAMM].AÒo,"
+            Concat m_sSql, " [03XXAAMM].A√±o,"
             Concat m_sSql, " [03XXAAMM].Mes,"
-            Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = TMP.AÒo) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
+            Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = TMP.A√±o) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
             Concat m_sSql, " ORDER BY TMP.VotosObtenidos DESC;"
 
         ' 17. Si es por municipio
@@ -345,22 +362,22 @@ Private Sub cmdConsultar_Click()
             Concat m_sSql, " FROM [03XXAAMM]"
             Concat m_sSql, " INNER JOIN (SELECT"
             Concat m_sSql, " [03XXAAMM].IdTipoProcesoElectoral,"
-            Concat m_sSql, " [03XXAAMM].AÒo,"
+            Concat m_sSql, " [03XXAAMM].A√±o,"
             Concat m_sSql, " [03XXAAMM].Mes,"
             Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial AS IdCandidatura,"
             Concat m_sSql, " Sum([10XXAAMM].VotosObtenidos) AS VotosObtenidos"
             Concat m_sSql, " FROM [03XXAAMM]"
-            Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = [10XXAAMM].AÒo) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
+            Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = [10XXAAMM].A√±o) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
             Concat m_sSql, " WHERE (([10XXAAMM].IdINEProvincia <> 99)"
             Concat m_sSql, " AND([10XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Value) & ")"
-            Concat m_sSql, " AND ([10XXAAMM].AÒo = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
+            Concat m_sSql, " AND ([10XXAAMM].A√±o = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
             Concat m_sSql, " AND ([10XXAAMM].Mes = " & CSqlDbl(cboProcesoElectoral.Column(2)) & ")"
             Concat m_sSql, " AND ([10XXAAMM].IdINEProvincia = " & CSqlDbl(cboProvincia.Value) & ")"
             Concat m_sSql, " AND ([10XXAAMM].IdINEMunicipio = " & CSqlDbl(cboMunicipio.Value) & "))"
             Concat m_sSql, " GROUP BY [03XXAAMM].IdTipoProcesoElectoral,"
-            Concat m_sSql, " [03XXAAMM].AÒo,"
+            Concat m_sSql, " [03XXAAMM].A√±o,"
             Concat m_sSql, " [03XXAAMM].Mes,"
-            Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = TMP.AÒo) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
+            Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = TMP.A√±o) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
             Concat m_sSql, " ORDER BY TMP.VotosObtenidos DESC;"
         End If
 
@@ -373,7 +390,7 @@ Private Sub cmdConsultar_Click()
             ' 18. Posicionamos el subformulario de resultados de candidaturas
             .Left = cteLeftPane_Left
 
-            ' 19. Ocultamos el botÛn de notificaciÛn del resultado de revisiÛn de acta
+            ' 19. Ocultamos el bot√≥n de notificaci√≥n del resultado de revisi√≥n de acta
             cmdExportarExcel.Visible = True
             cmdNotificarRevisionActa.Visible = False
             ActaNotificada_Etiqueta.Visible = False
@@ -389,45 +406,45 @@ Private Sub cmdExportarExcel_Click()
     Dim m_sTitle            As String
     Dim m_sSql              As String
 
-    ' 1. Bloqueamos el botÛn
+    ' 1. Bloqueamos el bot√≥n
     cmdExportarExcel.Enabled = False
     DoEvents
 
-    ' 2. Construimos el tÌtulo del fichero Excel
+    ' 2. Construimos el t√≠tulo del fichero Excel
     m_sTitle = cboProcesoElectoral.Column(3) & " - " & cboTipoProcesoElectoral.Column(1) & " - Resultados de candidaturas - "
 
-    ' 3. Si no se ha indicado comunidad autÛnoma, provincia o municipio,
+    ' 3. Si no se ha indicado comunidad aut√≥noma, provincia o municipio,
     '    asumimos que son los resultados a nivel nacional
     If ((cboComunidadAutonoma.ListIndex = -1) And (cboProvincia.ListIndex = -1)) Then
         Concat m_sTitle, "Total Nacional"
 
         m_sSql = "SELECT"
         Concat m_sSql, " [03XXAAMM].Siglas,"
-        Concat m_sSql, " [03XXAAMM].Denominacion AS [DenominaciÛn],"
+        Concat m_sSql, " [03XXAAMM].Denominacion AS [Denominaci√≥n],"
         Concat m_sSql, " TMP.[Votos Obtenidos]"
         Concat m_sSql, " FROM [03XXAAMM]"
         Concat m_sSql, " INNER JOIN (SELECT"
         Concat m_sSql, " [03XXAAMM].IdTipoProcesoElectoral,"
-        Concat m_sSql, " [03XXAAMM].AÒo,"
+        Concat m_sSql, " [03XXAAMM].A√±o,"
         Concat m_sSql, " [03XXAAMM].Mes,"
         Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelNacional AS IdCandidatura,"
         Concat m_sSql, " Sum([10XXAAMM].VotosObtenidos) AS [Votos Obtenidos]"
         Concat m_sSql, " FROM [03XXAAMM]"
-        Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = [10XXAAMM].AÒo) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
+        Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = [10XXAAMM].A√±o) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
         Concat m_sSql, " WHERE (([10XXAAMM].IdINEProvincia <> 99)"
         Concat m_sSql, " AND ([10XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Value) & ")"
-        Concat m_sSql, " AND ([10XXAAMM].AÒo = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
+        Concat m_sSql, " AND ([10XXAAMM].A√±o = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
         Concat m_sSql, " AND ([10XXAAMM].Mes = " & CSqlDbl(cboProcesoElectoral.Column(2)) & "))"
         Concat m_sSql, " GROUP BY [03XXAAMM].IdTipoProcesoElectoral,"
-        Concat m_sSql, " [03XXAAMM].AÒo,"
+        Concat m_sSql, " [03XXAAMM].A√±o,"
         Concat m_sSql, " [03XXAAMM].Mes,"
-        Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelNacional) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = TMP.AÒo) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
+        Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelNacional) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = TMP.A√±o) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
         Concat m_sSql, " ORDER BY TMP.[Votos Obtenidos] DESC;"
 
-    ' 4. Si es por comunidad autÛnoma
+    ' 4. Si es por comunidad aut√≥noma
     ElseIf ((cboComunidadAutonoma.ListIndex <> -1) And (cboProvincia.ListIndex = -1) And (cboMunicipio.ListIndex = -1)) Or _
            ((cboComunidadAutonoma.ListIndex <> -1) And (cboProvincia.ListIndex <> -1) And cboProvincia.Locked And (cboMunicipio.ListIndex = -1)) Then
-        Concat m_sTitle, "Comunidad autÛnoma - [" & cboComunidadAutonoma.Column(1) & "]"
+        Concat m_sTitle, "Comunidad aut√≥noma - [" & cboComunidadAutonoma.Column(1) & "]"
 
         m_sSql = "SELECT"
         Concat m_sSql, " [03XXAAMM].Siglas,"
@@ -436,24 +453,24 @@ Private Sub cmdExportarExcel_Click()
         Concat m_sSql, " FROM [03XXAAMM]"
         Concat m_sSql, " INNER JOIN (SELECT"
         Concat m_sSql, " [03XXAAMM].IdTipoProcesoElectoral,"
-        Concat m_sSql, " [03XXAAMM].AÒo,"
+        Concat m_sSql, " [03XXAAMM].A√±o,"
         Concat m_sSql, " [03XXAAMM].Mes,"
         Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelAutonomico AS IdCandidatura,"
         Concat m_sSql, " Sum([10XXAAMM].VotosObtenidos) AS [Votos Obtenidos]"
         Concat m_sSql, " FROM [03XXAAMM]"
-        Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = [10XXAAMM].AÒo) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
+        Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = [10XXAAMM].A√±o) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
         Concat m_sSql, " WHERE (([10XXAAMM].IdINEProvincia <> 99)"
         Concat m_sSql, " AND ([10XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Value) & ")"
-        Concat m_sSql, " AND ([10XXAAMM].AÒo = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
+        Concat m_sSql, " AND ([10XXAAMM].A√±o = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
         Concat m_sSql, " AND ([10XXAAMM].Mes = " & CSqlDbl(cboProcesoElectoral.Column(2)) & ")"
         Concat m_sSql, " AND ([10XXAAMM].IdINEComunidadAutonoma = " & CSqlDbl(cboComunidadAutonoma.Value) & "))"
         Concat m_sSql, " GROUP BY [03XXAAMM].IdTipoProcesoElectoral,"
-        Concat m_sSql, " [03XXAAMM].AÒo,"
+        Concat m_sSql, " [03XXAAMM].A√±o,"
         Concat m_sSql, " [03XXAAMM].Mes,"
-        Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelAutonomico) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = TMP.AÒo) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
+        Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelAutonomico) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = TMP.A√±o) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
         Concat m_sSql, " ORDER BY TMP.[Votos Obtenidos] DESC;"
 
-    ' 5. Si es por provincia/circunscripciÛn
+    ' 5. Si es por provincia/circunscripci√≥n
     ElseIf ((cboComunidadAutonoma.ListIndex <> -1) And (cboProvincia.ListIndex <> -1) And (cboMunicipio.ListIndex = -1)) Then
         Concat m_sTitle, "Provincia - [" & cboProvincia.Column(1) & "]"
 
@@ -464,21 +481,21 @@ Private Sub cmdExportarExcel_Click()
         Concat m_sSql, " FROM [03XXAAMM]"
         Concat m_sSql, " INNER JOIN (SELECT"
         Concat m_sSql, " [03XXAAMM].IdTipoProcesoElectoral,"
-        Concat m_sSql, " [03XXAAMM].AÒo,"
+        Concat m_sSql, " [03XXAAMM].A√±o,"
         Concat m_sSql, " [03XXAAMM].Mes,"
         Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial AS IdCandidatura,"
         Concat m_sSql, " Sum([10XXAAMM].VotosObtenidos) AS [Votos Obtenidos]"
         Concat m_sSql, " FROM [03XXAAMM]"
-        Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = [10XXAAMM].AÒo) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
+        Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = [10XXAAMM].A√±o) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
         Concat m_sSql, " WHERE (([10XXAAMM].IdINEProvincia <> 99)"
         Concat m_sSql, " AND ([10XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Value) & ")"
-        Concat m_sSql, " AND ([10XXAAMM].AÒo = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
+        Concat m_sSql, " AND ([10XXAAMM].A√±o = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
         Concat m_sSql, " AND ([10XXAAMM].Mes = " & CSqlDbl(cboProcesoElectoral.Column(2)) & ")"
         Concat m_sSql, " AND ([10XXAAMM].IdINEProvincia = " & CSqlDbl(cboProvincia.Value) & "))"
         Concat m_sSql, " GROUP BY [03XXAAMM].IdTipoProcesoElectoral,"
-        Concat m_sSql, " [03XXAAMM].AÒo,"
+        Concat m_sSql, " [03XXAAMM].A√±o,"
         Concat m_sSql, " [03XXAAMM].Mes,"
-        Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = TMP.AÒo) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
+        Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = TMP.A√±o) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
         Concat m_sSql, " ORDER BY TMP.[Votos Obtenidos] DESC;"
 
     ' 6. Si es por municipio
@@ -492,22 +509,22 @@ Private Sub cmdExportarExcel_Click()
         Concat m_sSql, " FROM [03XXAAMM]"
         Concat m_sSql, " INNER JOIN (SELECT"
         Concat m_sSql, " [03XXAAMM].IdTipoProcesoElectoral,"
-        Concat m_sSql, " [03XXAAMM].AÒo,"
+        Concat m_sSql, " [03XXAAMM].A√±o,"
         Concat m_sSql, " [03XXAAMM].Mes,"
         Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial AS IdCandidatura,"
         Concat m_sSql, " Sum([10XXAAMM].VotosObtenidos) AS [Votos Obtenidos]"
         Concat m_sSql, " FROM [03XXAAMM]"
-        Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = [10XXAAMM].AÒo) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
+        Concat m_sSql, " INNER JOIN [10XXAAMM] ON ([03XXAAMM].IdTipoProcesoElectoral = [10XXAAMM].IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = [10XXAAMM].A√±o) AND ([03XXAAMM].Mes = [10XXAAMM].Mes) AND ([03XXAAMM].IdCandidatura = [10XXAAMM].IdCandidatura)"
         Concat m_sSql, " WHERE (([10XXAAMM].IdINEProvincia <> 99)"
         Concat m_sSql, " AND([10XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(cboTipoProcesoElectoral.Value) & ")"
-        Concat m_sSql, " AND ([10XXAAMM].AÒo = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
+        Concat m_sSql, " AND ([10XXAAMM].A√±o = " & CSqlDbl(cboProcesoElectoral.Column(1)) & ")"
         Concat m_sSql, " AND ([10XXAAMM].Mes = " & CSqlDbl(cboProcesoElectoral.Column(2)) & ")"
         Concat m_sSql, " AND ([10XXAAMM].IdINEProvincia = " & CSqlDbl(cboProvincia.Value) & ")"
         Concat m_sSql, " AND ([10XXAAMM].IdINEMunicipio = " & CSqlDbl(cboMunicipio.Value) & "))"
         Concat m_sSql, " GROUP BY [03XXAAMM].IdTipoProcesoElectoral,"
-        Concat m_sSql, " [03XXAAMM].AÒo,"
+        Concat m_sSql, " [03XXAAMM].A√±o,"
         Concat m_sSql, " [03XXAAMM].Mes,"
-        Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].AÒo = TMP.AÒo) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
+        Concat m_sSql, " [03XXAAMM].IdCandidaturaNivelProvincial) AS TMP ON ([03XXAAMM].IdTipoProcesoElectoral = TMP.IdTipoProcesoElectoral) AND ([03XXAAMM].A√±o = TMP.A√±o) AND ([03XXAAMM].Mes = TMP.Mes) AND ([03XXAAMM].IdCandidatura = TMP.IdCandidatura)"
         Concat m_sSql, " ORDER BY TMP.[Votos Obtenidos] DESC;"
     End If
 
@@ -517,7 +534,7 @@ Private Sub cmdExportarExcel_Click()
     ' 8. Generamos el fichero MS Excel
     modMDB.ToMSExcel m_sSql, "Resultados candidaturas", m_sXLSFilePath, True, True, m_sTitle, m_sTitle, "Resultados electorales en fichero MS Excel"
 
-    ' 9. Desbloqueamos el botÛn
+    ' 9. Desbloqueamos el bot√≥n
     cmdExportarExcel.Enabled = True
     DoEvents
 End Sub
@@ -543,7 +560,7 @@ Private Sub cmdImportarFicheroZIP_Click()
         ' 4. Descomprimimos el fichero ZIP
         modSystem.UnZip m_sRutaFicheroZIP, m_sFolderPath
 
-        ' 5. Obtenemos la colecciÛn de ficheros que coincidan con la extensiÛn DAT
+        ' 5. Obtenemos la colecci√≥n de ficheros que coincidan con la extensi√≥n DAT
         m_sFilePath = VBA.FileSystem.Dir(m_sFolderPath & "*.DAT", vbArchive)
         While Not IsZrStr(m_sFilePath)
             ' 6. Si devuelve un fichero DAT, lo renombramos a TXT
@@ -555,7 +572,7 @@ Private Sub cmdImportarFicheroZIP_Click()
             End If
         Wend
 
-        ' 7. Obtenemos la relaciÛn de ficheros que obligatoriamente debe tener
+        ' 7. Obtenemos la relaci√≥n de ficheros que obligatoriamente debe tener
         '    el tipo de proceso electoral y las tablas de destino de los datos
         m_sSql = "SELECT"
         Concat m_sSql, " Format(AUX_TiposFicheros.IdTipoFichero, '00') & Format(AUX_FicherosObligatorios.IdTipoProcesoElectoral, '00') & '*.TXT' AS FileName,"
@@ -601,11 +618,11 @@ Private Sub cmdImportarFicheroZIP_Click()
             modMDB.CloseProgressBar
 
             ' 17. mostramos mensaje al usuario
-            If (MsgBox("Se han importado correctamente los datos del fichero ZIP con los resultados del proceso electoral, pero se recomienda compactar la base de datos para optimizarla." & vbCrLf & vbCrLf & "AVISO: Esta tarea puede llevar un tiempo, dependiento de la cantidad de resultados de procesos electorales que contenga actualmente la base de datos." & vbCrLf & vbCrLf & "øDesea salir y compactar la base de datos?", (vbYesNo + vbQuestion), "Fichero ZIP importado") = vbYes) Then
-                ' 18. Compactamos al salir de la aplicaciÛn
+            If (MsgBox("Se han importado correctamente los datos del fichero ZIP con los resultados del proceso electoral, pero se recomienda compactar la base de datos para optimizarla." & vbCrLf & vbCrLf & "AVISO: Esta tarea puede llevar un tiempo, dependiento de la cantidad de resultados de procesos electorales que contenga actualmente la base de datos." & vbCrLf & vbCrLf & "¬øDesea salir y compactar la base de datos?", (vbYesNo + vbQuestion), "Fichero ZIP importado") = vbYes) Then
+                ' 18. Compactamos al salir de la aplicaci√≥n
                 Application.SetOption "Auto Compact", True
 
-                ' 19. Salimos de la aplicaciÛn
+                ' 19. Salimos de la aplicaci√≥n
                 cmdSalir_Click
             End If
         End If
@@ -622,7 +639,7 @@ Private Sub cmdLimpiarCriterios_Click()
 End Sub
 
 Private Sub cmdNotificarRevisionActa_Click()
-    ' 1. Abrimos el formulario de notificaciÛn del acta
+    ' 1. Abrimos el formulario de notificaci√≥n del acta
     modMDB.OpenForm "(Form) Notificacion Acta"
 End Sub
 
@@ -630,15 +647,15 @@ Private Sub cmdSalir_Click()
     ' 1. Cerramos el formulario
     modMDB.CloseForm Me.Name
 
-    ' 2. Salimos de la aplicaciÛn
+    ' 2. Salimos de la aplicaci√≥n
     DoCmd.Quit
 End Sub
 
 Private Sub cmdVaciarBBDD_Click()
-    ' 1. Preguntamos al suaurio se est· seguro de querer eliminar los procesos electorales
-    If (MsgBox("Va a proceder a vaciar la base de datos, eliminando todos los resultados de procesos electorales que contenga." & vbCrLf & vbCrLf & "øEst· seguro de querer proceder a su eliminaciÛn?", (vbYesNo + vbQuestion), "Vaciar BBDD") = vbYes) Then
-        ' 2. Vaciamos jer·rquicamente las tablas con los datos de lo procesos electorales
-        modMDB.DeleteIfHasRows "RES_EscaÒos_Escrutinio"
+    ' 1. Preguntamos al suaurio se est√° seguro de querer eliminar los procesos electorales
+    If (MsgBox("Va a proceder a vaciar la base de datos, eliminando todos los resultados de procesos electorales que contenga." & vbCrLf & vbCrLf & "¬øEst√° seguro de querer proceder a su eliminaci√≥n?", (vbYesNo + vbQuestion), "Vaciar BBDD") = vbYes) Then
+        ' 2. Vaciamos jer√°rquicamente las tablas con los datos de lo procesos electorales
+        modMDB.DeleteIfHasRows "RES_Esca√±os_Escrutinio"
         modMDB.DeleteIfHasRows "10XXAAMM"
         modMDB.DeleteIfHasRows "09XXAAMM"
         modMDB.DeleteIfHasRows "08XXAAMM"
@@ -653,12 +670,12 @@ Private Sub cmdVaciarBBDD_Click()
         ' 3. Limpiamos los controles del formulario
         cmdLimpiarCriterios_Click
 
-        ' 4. Preguntamos al usuario si desea salir de la aplicaciÛn para proceder a compactarla
-        If (MsgBox("Se ha vaciado la base de datos, pero se recomienda proceder a su compactaciÛn para optimizarla." & vbCrLf & vbCrLf & "øDesea salir y compactar la base de datos?", (vbYesNo + vbQuestion), "Compactar BBDD") = vbYes) Then
-            ' 5. Compactamos al salir de la aplicaciÛn
+        ' 4. Preguntamos al usuario si desea salir de la aplicaci√≥n para proceder a compactarla
+        If (MsgBox("Se ha vaciado la base de datos, pero se recomienda proceder a su compactaci√≥n para optimizarla." & vbCrLf & vbCrLf & "¬øDesea salir y compactar la base de datos?", (vbYesNo + vbQuestion), "Compactar BBDD") = vbYes) Then
+            ' 5. Compactamos al salir de la aplicaci√≥n
             Application.SetOption "Auto Compact", True
 
-            ' 6. Salimos de la aplicaciÛn
+            ' 6. Salimos de la aplicaci√≥n
             cmdSalir_Click
         End If
     End If
@@ -679,7 +696,7 @@ Private Sub Form_Load()
         .Requery
     End With
 
-    ' 2. Cargamos el combo de comunidades autÛnomas
+    ' 2. Cargamos el combo de comunidades aut√≥nomas
     m_sSql = "SELECT"
     Concat m_sSql, " AUX_INE_ComunidadesAutonomas.IdINEComunidadAutonoma,"
     Concat m_sSql, " AUX_INE_ComunidadesAutonomas.Nombre"
@@ -695,7 +712,7 @@ Private Sub Form_Load()
     '    NOTA: Debido a que no se ha podido comprobar el formulario para otros tipos de procesos electorales,
     '          bloqueamos el combo de tipos de procesos electorales, para que tenga indicado permanentemente
     '          el tipo 'Congreso de los Diputados'. Para activar otros tipos de procesos electorales, se debe
-    '          eliminar o comentar este cÛdigo.
+    '          eliminar o comentar este c√≥digo.
     '
     cboTipoProcesoElectoral.Value = 2
     modMDB.LockControl cboTipoProcesoElectoral, True
