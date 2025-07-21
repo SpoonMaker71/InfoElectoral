@@ -12,27 +12,6 @@ Aplicación desarrollada en Microsoft Access + VBA para importar, consultar, ana
 - 📊 Exportación a Excel con formato, filtros y sumatorios.
 - 🖥️ Formularios interactivos, barra de progreso, splash de inicio.
 
-🏗️ Estructura del repositorio
-AccessElectoral/
-├── README.md                        ← Este archivo
-├── AccessDB.accdb                   ← Archivo Access principal
-├── módulos/
-│   ├── modSystem.bas
-│   ├── modMDB.bas
-│   ├── modGlobal.bas
-│   └── formularios.frm
-├── documentación/
-│   ├── Manual_Usuario.pdf
-│   ├── Ficha_Técnica.xlsx
-│   └── Diagrama_Estructura.png
-├── imágenes/
-│   ├── splash_screen.png
-│   ├── resultados_candidaturas.png
-│   └── progreso_importación.png
-└── LICENSE                          ← Licencia pública (MIT/GPL)
-
-
-
 🔧 Requisitos
 - Microsoft Access 2016 o superior
 - Windows 10/11
