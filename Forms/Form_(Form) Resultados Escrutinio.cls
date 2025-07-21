@@ -1,3 +1,18 @@
+' ---------------------------------------------------------------
+' Formulario: Form_(Form) Resultados Escrutinio
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' Descripci√≥n:
+'   Formulario de an√°lisis y visualizaci√≥n de resultados de escrutinio
+'   por mesa electoral. Permite aplicar el sistema D‚ÄôHondt, mostrar
+'   distribuci√≥n de esca√±os, y exportar informes detallados.
+'
+'   ‚ö†Ô∏è Este formulario contiene l√≥gica anal√≠tica e interactiva:
+'   c√°lculos, visualizaci√≥n, exportaci√≥n y navegaci√≥n por resultados.
+'
+' Fecha: [a√±adir fecha]
+' ---------------------------------------------------------------
+
 VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
@@ -11,31 +26,31 @@ Option Compare Database
 Option Explicit
 
 Private Sub cmdExportarExcel_Click()
-    ' 1. Si est· cargado el formulario de consulta de resultados electorales
+    ' 1. Si est√° cargado el formulario de consulta de resultados electorales
     If modMDB.IsLoaded("(Form) Consulta de resultados electorales por mesa") Then
         Dim m_sXLSFilePath      As String
         Dim m_sTitle            As String
         Dim m_sSql              As String
 
         With Forms("(Form) Consulta de resultados electorales por mesa").Form
-            ' 2. Bloqueamos el botÛn
+            ' 2. Bloqueamos el bot√≥n
             cmdExportarExcel.Enabled = False
             DoEvents
         
-            ' 3. Construimos el tÌtulo del fichero Excel
+            ' 3. Construimos el t√≠tulo del fichero Excel
             m_sTitle = .cboProcesoElectoral.Column(3) & " - " & .cboTipoProcesoElectoral.Column(1) & " - Resultados del escrutinio - "
 
-            ' 4. Si no se ha indicado comunidad autÛnoma, provincia
+            ' 4. Si no se ha indicado comunidad aut√≥noma, provincia
             '    asumimos que son los resultados a nivel nacional
             If ((.cboComunidadAutonoma.ListIndex = -1) And (.cboProvincia.ListIndex = -1)) Then
                 Concat m_sTitle, "Total Nacional"
 
-            ' 5. Si es por comunidad autÛnoma
+            ' 5. Si es por comunidad aut√≥noma
             ElseIf ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex = -1)) Or _
                    ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex <> -1) And .cboProvincia.Locked) Then
-                Concat m_sTitle, "Comunidad autÛnoma - " & .cboComunidadAutonoma.Column(1)
+                Concat m_sTitle, "Comunidad aut√≥noma - " & .cboComunidadAutonoma.Column(1)
 
-            ' 6. Si es por provincia/circunscripciÛn
+            ' 6. Si es por provincia/circunscripci√≥n
             ElseIf ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex <> -1)) Then
                 Concat m_sTitle, "Provincia - " & .cboProvincia.Column(1)
             End If
@@ -45,25 +60,25 @@ Private Sub cmdExportarExcel_Click()
             m_sSql = "SELECT"
             Concat m_sSql, " [03XXAAMM].Siglas,"
             Concat m_sSql, " [03XXAAMM].Denominacion,"
-            Concat m_sSql, " Sum(RES_EscaÒos_Escrutinio.EscaÒo) AS EscaÒos"
+            Concat m_sSql, " Sum(RES_Esca√±os_Escrutinio.Esca√±o) AS Esca√±os"
             Concat m_sSql, " FROM 03XXAAMM"
-            Concat m_sSql, " INNER JOIN RES_EscaÒos_Escrutinio ON (RES_EscaÒos_Escrutinio.IdCandidaturaNivelNacional = [03XXAAMM].IdCandidatura) AND ([03XXAAMM].Mes = RES_EscaÒos_Escrutinio.Mes) AND ([03XXAAMM].AÒo = RES_EscaÒos_Escrutinio.AÒo) AND ([03XXAAMM].IdTipoProcesoElectoral = RES_EscaÒos_Escrutinio.IdTipoProcesoElectoral)"
+            Concat m_sSql, " INNER JOIN RES_Esca√±os_Escrutinio ON (RES_Esca√±os_Escrutinio.IdCandidaturaNivelNacional = [03XXAAMM].IdCandidatura) AND ([03XXAAMM].Mes = RES_Esca√±os_Escrutinio.Mes) AND ([03XXAAMM].A√±o = RES_Esca√±os_Escrutinio.A√±o) AND ([03XXAAMM].IdTipoProcesoElectoral = RES_Esca√±os_Escrutinio.IdTipoProcesoElectoral)"
             Concat m_sSql, " WHERE (([03XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(.cboTipoProcesoElectoral.Value) & ")"
-            Concat m_sSql, " AND ([03XXAAMM].AÒo = " & CSqlDbl(.cboProcesoElectoral.Column(1)) & ")"
+            Concat m_sSql, " AND ([03XXAAMM].A√±o = " & CSqlDbl(.cboProcesoElectoral.Column(1)) & ")"
             Concat m_sSql, " AND ([03XXAAMM].Mes = " & CSqlDbl(.cboProcesoElectoral.Column(2)) & ")"
-            ' 8. Si es por comunidad autÛnoma
+            ' 8. Si es por comunidad aut√≥noma
             If ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex = -1)) Or _
                ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex <> -1) And .cboProvincia.Locked) Then
-                If (.cboComunidadAutonoma.ListIndex <> -1) Then Concat m_sSql, " AND (RES_EscaÒos_Escrutinio.IdINEComunidadAutonoma = " & CSqlDbl(.cboComunidadAutonoma.Value) & ")"
+                If (.cboComunidadAutonoma.ListIndex <> -1) Then Concat m_sSql, " AND (RES_Esca√±os_Escrutinio.IdINEComunidadAutonoma = " & CSqlDbl(.cboComunidadAutonoma.Value) & ")"
 
-            ' 9. Si es por provincia/circunscripciÛn
+            ' 9. Si es por provincia/circunscripci√≥n
             ElseIf ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex <> -1)) Then
-                If (.cboProvincia.ListIndex <> -1) Then Concat m_sSql, " AND (RES_EscaÒos_Escrutinio.IdINEProvincia = " & CSqlDbl(.cboProvincia.Value) & ")"
+                If (.cboProvincia.ListIndex <> -1) Then Concat m_sSql, " AND (RES_Esca√±os_Escrutinio.IdINEProvincia = " & CSqlDbl(.cboProvincia.Value) & ")"
             End If
             Concat m_sSql, ") GROUP BY [03XXAAMM].Siglas,"
             Concat m_sSql, " [03XXAAMM].Denominacion"
-            Concat m_sSql, " ORDER BY Sum(RES_EscaÒos_Escrutinio.EscaÒo) DESC,"
-            Concat m_sSql, " Sum(RES_EscaÒos_Escrutinio.Dhont) DESC;"
+            Concat m_sSql, " ORDER BY Sum(RES_Esca√±os_Escrutinio.Esca√±o) DESC,"
+            Concat m_sSql, " Sum(RES_Esca√±os_Escrutinio.Dhont) DESC;"
 
             With sfResultadosEscrutinio.Form
                 ' 8. Establecemos el origen de los datos del escrutinio
@@ -78,7 +93,7 @@ Private Sub cmdExportarExcel_Click()
         ' 11. Generamos el fichero MS Excel
         modMDB.ToMSExcel m_sSql, "Resultados del Escrutinio", m_sXLSFilePath, True, True, m_sTitle, m_sTitle, "Resultados del escrutinio en fichero MS Excel"
 
-        ' 12. Desbloqueamos el botÛn
+        ' 12. Desbloqueamos el bot√≥n
         cmdExportarExcel.Enabled = True
         DoEvents
     End If
@@ -92,20 +107,20 @@ End Sub
 Private Sub Form_Load()
     Dim m_sSql          As String
 
-    ' 1. Si est· cargado el formulario de consulta de resultados electorales
+    ' 1. Si est√° cargado el formulario de consulta de resultados electorales
     If modMDB.IsLoaded("(Form) Consulta de resultados electorales por mesa") Then
         With Forms("(Form) Consulta de resultados electorales por mesa").Form
-            ' 2. Si no se ha indicado comunidad autÛnoma, provincia
+            ' 2. Si no se ha indicado comunidad aut√≥noma, provincia
             '    asumimos que son los resultados a nivel nacional
             If ((.cboComunidadAutonoma.ListIndex = -1) And (.cboProvincia.ListIndex = -1)) Then
                 sfResultadosEscrutinio_Etiqueta.Caption = "Total Nacional"
 
-            ' 3. Si es por comunidad autÛnoma
+            ' 3. Si es por comunidad aut√≥noma
             ElseIf ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex = -1)) Or _
                    ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex <> -1) And .cboProvincia.Locked) Then
-                sfResultadosEscrutinio_Etiqueta.Caption = "Comunidad autÛnoma: " & .cboComunidadAutonoma.Column(1)
+                sfResultadosEscrutinio_Etiqueta.Caption = "Comunidad aut√≥noma: " & .cboComunidadAutonoma.Column(1)
 
-            ' 4. Si es por provincia/circunscripciÛn
+            ' 4. Si es por provincia/circunscripci√≥n
             ElseIf ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex <> -1)) Then
                 sfResultadosEscrutinio_Etiqueta.Caption = "Provincia: " & .cboProvincia.Column(1)
             End If
@@ -115,30 +130,30 @@ Private Sub Form_Load()
             m_sSql = "SELECT"
             Concat m_sSql, " [03XXAAMM].Siglas,"
             Concat m_sSql, " [03XXAAMM].Denominacion,"
-            Concat m_sSql, " Sum(RES_EscaÒos_Escrutinio.EscaÒo) AS EscaÒos"
+            Concat m_sSql, " Sum(RES_Esca√±os_Escrutinio.Esca√±o) AS Esca√±os"
             Concat m_sSql, " FROM 03XXAAMM"
-            Concat m_sSql, " INNER JOIN RES_EscaÒos_Escrutinio ON (RES_EscaÒos_Escrutinio.IdCandidaturaNivelNacional = [03XXAAMM].IdCandidatura) AND ([03XXAAMM].Mes = RES_EscaÒos_Escrutinio.Mes) AND ([03XXAAMM].AÒo = RES_EscaÒos_Escrutinio.AÒo) AND ([03XXAAMM].IdTipoProcesoElectoral = RES_EscaÒos_Escrutinio.IdTipoProcesoElectoral)"
+            Concat m_sSql, " INNER JOIN RES_Esca√±os_Escrutinio ON (RES_Esca√±os_Escrutinio.IdCandidaturaNivelNacional = [03XXAAMM].IdCandidatura) AND ([03XXAAMM].Mes = RES_Esca√±os_Escrutinio.Mes) AND ([03XXAAMM].A√±o = RES_Esca√±os_Escrutinio.A√±o) AND ([03XXAAMM].IdTipoProcesoElectoral = RES_Esca√±os_Escrutinio.IdTipoProcesoElectoral)"
             Concat m_sSql, " WHERE (([03XXAAMM].IdTipoProcesoElectoral = " & CSqlDbl(.cboTipoProcesoElectoral.Value) & ")"
-            Concat m_sSql, " AND ([03XXAAMM].AÒo = " & CSqlDbl(.cboProcesoElectoral.Column(1)) & ")"
+            Concat m_sSql, " AND ([03XXAAMM].A√±o = " & CSqlDbl(.cboProcesoElectoral.Column(1)) & ")"
             Concat m_sSql, " AND ([03XXAAMM].Mes = " & CSqlDbl(.cboProcesoElectoral.Column(2)) & ")"
-            ' 6. Si es por comunidad autÛnoma
+            ' 6. Si es por comunidad aut√≥noma
             If ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex = -1)) Or _
                ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex <> -1) And .cboProvincia.Locked) Then
-                If (.cboComunidadAutonoma.ListIndex <> -1) Then Concat m_sSql, " AND (RES_EscaÒos_Escrutinio.IdINEComunidadAutonoma = " & CSqlDbl(.cboComunidadAutonoma.Value) & ")"
+                If (.cboComunidadAutonoma.ListIndex <> -1) Then Concat m_sSql, " AND (RES_Esca√±os_Escrutinio.IdINEComunidadAutonoma = " & CSqlDbl(.cboComunidadAutonoma.Value) & ")"
 
-            ' 7. Si es por provincia/circunscripciÛn
+            ' 7. Si es por provincia/circunscripci√≥n
             ElseIf ((.cboComunidadAutonoma.ListIndex <> -1) And (.cboProvincia.ListIndex <> -1)) Then
-                If (.cboProvincia.ListIndex <> -1) Then Concat m_sSql, " AND (RES_EscaÒos_Escrutinio.IdINEProvincia = " & CSqlDbl(.cboProvincia.Value) & ")"
+                If (.cboProvincia.ListIndex <> -1) Then Concat m_sSql, " AND (RES_Esca√±os_Escrutinio.IdINEProvincia = " & CSqlDbl(.cboProvincia.Value) & ")"
             End If
             Concat m_sSql, ") GROUP BY [03XXAAMM].Siglas,"
             Concat m_sSql, " [03XXAAMM].Denominacion"
-            Concat m_sSql, " ORDER BY Sum(RES_EscaÒos_Escrutinio.EscaÒo) DESC;"
+            Concat m_sSql, " ORDER BY Sum(RES_Esca√±os_Escrutinio.Esca√±o) DESC;"
             With sfResultadosEscrutinio.Form
                 ' 8. Establecemos el origen de los datos del escrutinio
                 .RecordSource = m_sSql
                 .Requery
 
-                ' 9. Mostramos el bontÛn de exportar a Excel si hay resultados
+                ' 9. Mostramos el bont√≥n de exportar a Excel si hay resultados
                 cmdExportarExcel.Visible = (Not .Recordset Is Nothing)
             End With
         End With
