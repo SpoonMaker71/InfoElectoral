@@ -1,3 +1,19 @@
+' ---------------------------------------------------------------
+' Clase: Form_(Form) Splash.cls
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' Descripci贸n:
+'   Formulario de presentaci贸n que se muestra al iniciar la aplicaci贸n.
+'   Puede incluir animaciones, mensajes de carga, logos o inicializaci贸n
+'   de variables globales.
+'
+'   鈿狅笍 Este formulario no contiene l贸gica de negocio ni interacci贸n directa
+'   con el usuario. Su prop贸sito es visual y t茅cnico: mostrar el arranque
+'   del sistema mientras se preparan los recursos.
+'
+' Fecha: [a帽adir fecha]
+' ---------------------------------------------------------------
+
 VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
@@ -11,10 +27,10 @@ Option Compare Database
 Option Explicit
 
 Private Sub Form_Open(Cancel As Integer)
-    ' 1. Ocultamos la ventana de la aplicaci髇 Access
+    ' 1. Ocultamos la ventana de la aplicaci贸n Access
     ShowAccessWindow vbHide
 
-    ' 2. Desactivamos elcompactar al salir de la aplicaci髇
+    ' 2. Desactivamos elcompactar al salir de la aplicaci贸n
     Application.SetOption "Auto Compact", False
 
     ' 3. Iniciamos el temporizador
@@ -26,6 +42,6 @@ Private Sub Form_Timer()
     '    cerramos el formulario del logo
     modMDB.CloseForm Me.Name
 
-    ' 2. Abrimos el formulario principal de la aplicaci髇
+    ' 2. Abrimos el formulario principal de la aplicaci贸n
     modMDB.OpenForm "(Form) Consulta de resultados electorales por mesa"
 End Sub
