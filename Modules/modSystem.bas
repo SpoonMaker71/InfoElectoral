@@ -1,3 +1,18 @@
+' ---------------------------------------------------------------
+' M√≥dulo: modSystem.bas
+' Autor: Juan Francisco Cucharero Cabezas
+' Proyecto: InfoElectoral
+' Descripci√≥n:
+'   Funciones auxiliares para interacci√≥n con el sistema operativo.
+'   Incluye descompresi√≥n de archivos, gesti√≥n de rutas, apertura
+'   de carpetas y eliminaci√≥n de archivos temporales.
+'
+'   ‚ö†Ô∏è Este m√≥dulo no contiene validaciones ni confirmaciones.
+'   Toda la l√≥gica interactiva se gestiona desde los formularios.
+'
+' Fecha: [a√±adir fecha]
+' ---------------------------------------------------------------
+
 Attribute VB_Name = "modSystem"
 Option Compare Database
 Option Explicit
@@ -57,9 +72,9 @@ Public Enum CSIDL_Enum
     USER_NETHOOD = 19               ' User 'Network Neighborhood' Folder (C:\Documents and Settings\[USER]\NetHood)
     WINDOWS_FONTS = 20              ' Windows 'Fonts' Folder (C:\WINNT\Fonts)
     USER_TEMPLATES = 21             ' User 'Document Templates' Folder (C:\Documents and Settings\[USER]\Templates)
-    ALLUSERS_STARTMENU = 22         ' All Users 'Start Menu' Folder (C:\Documents and Settings\All Users\Men˙ Inicio)
-    ALLUSERS_PROGRAMS = 23          ' All Users 'Program Group' Folder (C:\Documents and Settings\All Users\Men˙ Inicio\programas)
-    ALLUSERS_STARTUP = 24           ' All Users 'Startup Group' Folder (C:\Documents and Settings\All Users\Men˙ Inicio\programas\Inicio)
+    ALLUSERS_STARTMENU = 22         ' All Users 'Start Menu' Folder (C:\Documents and Settings\All Users\Men√∫ Inicio)
+    ALLUSERS_PROGRAMS = 23          ' All Users 'Program Group' Folder (C:\Documents and Settings\All Users\Men√∫ Inicio\programas)
+    ALLUSERS_STARTUP = 24           ' All Users 'Startup Group' Folder (C:\Documents and Settings\All Users\Men√∫ Inicio\programas\Inicio)
     ALLUSERS_DESKTOPDIRECTORY = 25  ' All Users 'Desktop' Folder (C:\Documents and Settings\All Users\Desktop)
     USER_APPDATA = 26               ' User 'Application Data' Folder (C:\Documents and Settings\[USER]\Application Data)
     USER_PRINTHOOD = 27             ' User 'Printers' Folder (C:\Documents and Settings\[USER]\PrintHood)
@@ -92,7 +107,7 @@ Public Enum SND_Flags
     SND_ALIAS = &H10000             ' Nombre de entrada identificada a WIN.INI es [sounds]
     SND_ALIAS_ID = &H110000
     SND_ASYNC = &H1                 ' Reproducir Asincronadamente (por defecto)
-    SND_SYNC = &H0                  ' Reproducir sincronadamente °No recomendado, pues el mci no te devuelve el control hasta
+    SND_SYNC = &H0                  ' Reproducir sincronadamente ¬°No recomendado, pues el mci no te devuelve el control hasta
     SND_FILENAME = &H20000
     SND_LOOP = &H8                  ' Reproducir en bucle continuo
     SND_MEMORY = &H4
@@ -103,7 +118,7 @@ Public Enum SND_Flags
     SND_RESOURCE = &H40004
 End Enum
 
-' DeclaraciÛn de constantes
+' Declaraci√≥n de constantes
 Public Enum OFN_Enum
     OFN_ALLOWMULTISELECT = &H200
     OFN_CREATEPROMPT = &H2000
@@ -146,13 +161,13 @@ End Enum
 
 Public Enum enumStripStr
     None = 0                        ' Sin limpiar
-    BOE = 1                         ' CodificaciÛn del formato BOE (ISO-8859-1)
-    ISO = 2                         ' CodificaciÛn del formato SEPA sin caracteres alfanumÈricos
-    SEPA = 3                        ' CodificaciÛn del formato SEPA (ISO-20022)
-    SQL = 4                         ' CodificaciÛn compatible con cadenas de texto en lenguaje SQL
+    BOE = 1                         ' Codificaci√≥n del formato BOE (ISO-8859-1)
+    ISO = 2                         ' Codificaci√≥n del formato SEPA sin caracteres alfanum√©ricos
+    SEPA = 3                        ' Codificaci√≥n del formato SEPA (ISO-20022)
+    SQL = 4                         ' Codificaci√≥n compatible con cadenas de texto en lenguaje SQL
 End Enum
 
-' Constante de tipo de codificaciÛn de fichero
+' Constante de tipo de codificaci√≥n de fichero
 Public Enum enumCharcode
     CdoSystemASCII = 0
     CdoBIG5 = 1
@@ -195,23 +210,23 @@ Public Type typSYSTEMTIME
 End Type
 
 Public Type typOPENFILENAME
-    lStructSize                         As Long             ' TamaÒo en bytes de esta misma estructura.
+    lStructSize                         As Long             ' Tama√±o en bytes de esta misma estructura.
     hwndOwner                           As Long             ' Manejador de ventana del formulario padre.
     hInstance                           As Long             ' Manejador de instancia.
     lpstrFilter                         As String           ' Filtro de archivos para abrir.
     lpstrCustomFilter                   As String           ' Filtro personalizado.
     nMaxCustFilter                      As Long             ' Indice del filtro personalizado.
-    nFilterIndex                        As Long             ' IndÌce del filtro.
+    nFilterIndex                        As Long             ' Ind√≠ce del filtro.
     lpstrFile                           As String           ' Nombre del fichero inicial.
     nMaxFile                            As Long             ' Longitud del nombre del Fichero.
-    lpstrFileTitle                      As String           ' Nombre y extensiÛn del fichero.
-    nMaxFileTitle                       As Long             ' TÌtulo de la cadena precedente.
+    lpstrFileTitle                      As String           ' Nombre y extensi√≥n del fichero.
+    nMaxFileTitle                       As Long             ' T√≠tulo de la cadena precedente.
     lpstrInitialDir                     As String           ' Ruta de la carpeta inicial.
-    lpstrTitle                          As String           ' TÌtulo de la ventana.
-    Flags                               As Long             ' Flags de configuraciÛn de la ventana.
-    nFileOffset                         As Integer          ' PosiciÛn del nombre de fichero en la cadena.
-    nFileExtension                      As Integer          ' PosiciÛn de la extensiÛn del fichero en la cadena.
-    lpstrDefExt                         As String           ' ExtensiÛn por defecto del fichero.
+    lpstrTitle                          As String           ' T√≠tulo de la ventana.
+    Flags                               As Long             ' Flags de configuraci√≥n de la ventana.
+    nFileOffset                         As Integer          ' Posici√≥n del nombre de fichero en la cadena.
+    nFileExtension                      As Integer          ' Posici√≥n de la extensi√≥n del fichero en la cadena.
+    lpstrDefExt                         As String           ' Extensi√≥n por defecto del fichero.
     lCustData                           As Long
     lpfnHook                            As Long
     lpTemplateName                      As String
@@ -246,7 +261,7 @@ Public Type ITEMIDLIST
     mkid                                As ShortItemId
 End Type
 
-' FunciÛn para validar y construir una ruta de archivo o carpeta.
+' Funci√≥n para validar y construir una ruta de archivo o carpeta.
 Public Function BuiltPath(ByVal sPath As String) As Boolean
     Dim m_sPath()           As String
     Dim m_sTempPath         As String
@@ -257,7 +272,7 @@ Public Function BuiltPath(ByVal sPath As String) As Boolean
 
     If modSystem.EvalStr(sPath, "^[\\]{2}") Then                                ' Unidad de red
         m_lInit = 2
-    ElseIf modSystem.EvalStr(sPath, "^[A-Z]{1}[:]{1}[\\]{1}", , True) Then      ' Unidad fÌsica o unidad de red mapeada
+    ElseIf modSystem.EvalStr(sPath, "^[A-Z]{1}[:]{1}[\\]{1}", , True) Then      ' Unidad f√≠sica o unidad de red mapeada
         m_lInit = 1
     Else
         Err.Raise vbObjectError, GetMDBName, "No se reconoce el tipo de ruta."
@@ -279,7 +294,7 @@ Error_BuiltPath:
     GetError "modSystem.BuiltPath"
 End Function
 
-' FunciÛn para cambiar la extensiÛn de la ruta de un fichero
+' Funci√≥n para cambiar la extensi√≥n de la ruta de un fichero
 Public Function ChangeFileExtension(ByVal sFilePath As String, _
                                     ByVal sExtension As String) As String
 
@@ -297,7 +312,7 @@ Error_ChangeFileExtension:
     GetError "modSystem.ChangeFileExtension"
 End Function
 
-' FunciÛn para copiar un fichero.
+' Funci√≥n para copiar un fichero.
 Public Function CopyFile(ByVal sFromFilePath As String, _
                          ByVal sToFilePath As String, _
                          Optional ByVal bOverwrite As Boolean = False) As Boolean
@@ -305,9 +320,9 @@ Public Function CopyFile(ByVal sFromFilePath As String, _
 
     If modSystem.FileExists(sToFilePath) Then
         If bOverwrite Then
-            If Not modSystem.DeleteFile(sToFilePath) Then Err.Raise vbObjectError, GetMDBName, "No se ha podido reemplazar el fichero de destino. øPuede que estÈ en uso?"
+            If Not modSystem.DeleteFile(sToFilePath) Then Err.Raise vbObjectError, GetMDBName, "No se ha podido reemplazar el fichero de destino. ¬øPuede que est√© en uso?"
         Else
-            Err.Raise vbObjectError, GetMDBName, "No se puede copiar el archivo ya que se encuentra otro con el mismo nombre en la misma ubicaciÛn."
+            Err.Raise vbObjectError, GetMDBName, "No se puede copiar el archivo ya que se encuentra otro con el mismo nombre en la misma ubicaci√≥n."
         End If
     End If
 
@@ -321,7 +336,7 @@ Error_CopyFile:
     GetError "modSystem.CopyFile"
 End Function
 
-' FunciÛn para crear un fichero (Archivo).
+' Funci√≥n para crear un fichero (Archivo).
 Public Function CreateFile(ByVal sFilePath As String) As Boolean
     On Error GoTo Error_CreateFile
 
@@ -336,7 +351,7 @@ Error_CreateFile:
     GetError "modSystem.CreateFile"
 End Function
 
-' MÈtodo para crear una carpeta (Directorio).
+' M√©todo para crear una carpeta (Directorio).
 Public Function CreateFolder(ByVal sFolderPath As String) As Boolean
     On Error GoTo Error_CreateFolder
 
@@ -349,7 +364,7 @@ Error_CreateFolder:
     GetError "modSystem.CreateFolder"
 End Function
 
-' FunciÛn para crear un acceso directo o fichero "lnk"
+' Funci√≥n para crear un acceso directo o fichero "lnk"
 Public Function CreateShorcut(ByVal sShorcutFilePath As String, _
                               ByVal sTargetPath As String, _
                               Optional ByVal sWorkingDirectory As String = vbNullString, _
@@ -360,13 +375,13 @@ Public Function CreateShorcut(ByVal sShorcutFilePath As String, _
     modSystem.DeleteIfFileExists sShorcutFilePath
 
     With CreateObject("WScript.Shell").CreateShortcut(sShorcutFilePath)
-        ' 2. Establecemos la ruta de ubicaci¥no del Acceso directo
+        ' 2. Establecemos la ruta de ubicaci¬¥no del Acceso directo
         .TargetPath = sTargetPath
 
-        ' 3. Si no est· vacio el Directorio de trabajo, y existe, se establece el pasado como par·metro
+        ' 3. Si no est√° vacio el Directorio de trabajo, y existe, se establece el pasado como par√°metro
         If Not (IsZrStr(sWorkingDirectory) Or Not modSystem.FolderExists(sWorkingDirectory)) Then .WorkingDirectory = sWorkingDirectory
 
-        ' 4. Si se pasÛ una ruta de icono, y existe la ruta del mismo, se procede a establecerlo para el Acceso directo
+        ' 4. Si se pas√≥ una ruta de icono, y existe la ruta del mismo, se procede a establecerlo para el Acceso directo
         If Not (IsZrStr(sIconFilePath) Or modSystem.FileExists(sIconFilePath)) Then .IconLocation = sIconFilePath
 
         ' 5. Guardamos el Acceso directo
@@ -382,14 +397,14 @@ Error_CreateShorcut:
     GetError "modSystem.CreateShorcut"
 End Function
 
-' FunciÛn para eliminar un fichero.
+' Funci√≥n para eliminar un fichero.
 Public Function DeleteFile(ByVal sFilePath As String) As Boolean
     On Error Resume Next
     VBA.FileSystem.Kill sFilePath
     DeleteFile = (Not modSystem.FileExists(sFilePath))
 End Function
 
-' FunciÛn que elimina un fichero si existe
+' Funci√≥n que elimina un fichero si existe
 Public Function DeleteIfFileExists(ByVal sFilePath As String) As Boolean
     On Error GoTo Error_DeleteIfFileExists
 
@@ -406,7 +421,7 @@ Error_DeleteIfFileExists:
     GetError "modSystem.DeleteIfFileExists", sFilePath
 End Function
 
-' FunciÛn para validar si existe un fichero (Archivo).
+' Funci√≥n para validar si existe un fichero (Archivo).
 Public Function FileExists(ByVal sFilePath As String) As Boolean
     On Error GoTo Error_FileExists
 
@@ -418,7 +433,7 @@ Error_FileExists:
     GetError "modSystem.FileExists", sFilePath
 End Function
 
-' FunciÛn para validar si existe una carpeta (Directorio).
+' Funci√≥n para validar si existe una carpeta (Directorio).
 Public Function FolderExists(ByVal sFolderPath As String) As Boolean
     On Error GoTo Error_FolderExists
 
@@ -430,7 +445,7 @@ Error_FolderExists:
     Err.Clear
 End Function
 
-' FunciÛn para obtener el Usuario de la sesiÛn actual de Windows.
+' Funci√≥n para obtener el Usuario de la sesi√≥n actual de Windows.
 Public Function GetCurrentWinUser() As String
     Dim m_sBuffer           As String
 
@@ -445,7 +460,7 @@ Error_GetCurrentWinUser:
     GetError "modSystem.GetCurrentWinUser"
 End Function
 
-' FunciÛn para obtener el nombre del equipo donde se iniciÛ la sesiÛn actual de Windows.
+' Funci√≥n para obtener el nombre del equipo donde se inici√≥ la sesi√≥n actual de Windows.
 Public Function GetCurrentWorkStation() As String
     Dim m_sBuffer           As String
 
@@ -460,7 +475,7 @@ Error_GetCurrentWorkStation:
     GetError "modSystem.GetCurrentWorkStation"
 End Function
 
-' FunciÛn para obtener una ruta de directorio a partir de una fecha
+' Funci√≥n para obtener una ruta de directorio a partir de una fecha
 Public Function GetDatePathTree(Optional ByVal dtDate As Date = 0, _
                                 Optional ByVal lenumTypeDateTreePath As enumTypeDateTreePath = enumTypeDateTreePath.MonthTreePath) As String
     On Error GoTo Error_GetDatePathTree
@@ -484,30 +499,30 @@ Error_GetDatePathTree:
     GetError "modSystem.GetDatePathTree"
 End Function
 
-' FunciÛn para obtener la informacion de volumen de una unidad.
+' Funci√≥n para obtener la informacion de volumen de una unidad.
 Public Function GetDriveInfo(ByVal sRootPathName As String) As typDrive
     Dim m_sVolumeNameBuffer         As String * 256
     Dim m_sFileSystemNameBuffer     As String * 256
 
     On Error GoTo Error_GetDriveInfo
 
-    ' 1. Ponemos la ruta en may˙sculas
+    ' 1. Ponemos la ruta en may√∫sculas
     sRootPathName = UCase(sRootPathName)
 
     ' 2. Validamos que sea correcta la ruta
     If Not modSystem.EvalStr(sRootPathName, "^[A-Z]{1}[:]{1}[\\]{1}$", , True) Then Err.Raise vbObjectError, GetMDBName(), "No ha especificado una ruta de raiz de unidad."
 
     With GetDriveInfo
-        ' 3. Obtenemos la informaciÛn de la unidad
+        ' 3. Obtenemos la informaci√≥n de la unidad
         GetVolumeInformation sRootPathName, m_sVolumeNameBuffer, 256, .SerialNumber, .MaximumComponentLength, .FileSystemFlags, m_sFileSystemNameBuffer, 256
 
         ' 4. Obtenemos la Letra de la unidad
         .Drive = Left(sRootPathName, 2)
 
-        ' 5. Obtenemos el TamaÒo de buffer del volumen
+        ' 5. Obtenemos el Tama√±o de buffer del volumen
         If Not IsZrStr(m_sVolumeNameBuffer) Then .VolumeName = modSystem.StripNulls(m_sVolumeNameBuffer)
 
-        ' 6. Obtenemos el N˙mero de serie en formato Hexadecimal
+        ' 6. Obtenemos el N√∫mero de serie en formato Hexadecimal
         If Not IsZr(.SerialNumber) Then .SerialNumberHex = Format(Hex(.SerialNumber), "@@@@-@@@@")
     End With
 
@@ -517,7 +532,7 @@ Error_GetDriveInfo:
     GetError "modSystem.GetDriveInfo"
 End Function
 
-' FunciÛn para obtener la fecha en la que se creÛ un fichero.
+' Funci√≥n para obtener la fecha en la que se cre√≥ un fichero.
 Public Function GetFileDateCreated(ByVal sFilePath As String, _
                                    Optional ByVal bDateTime As Boolean = False) As Date
     On Error GoTo Error_GetFileDateCreated
@@ -532,7 +547,7 @@ Error_GetFileDateCreated:
     GetError "modSystem.GetFileDateCreated"
 End Function
 
-' FunciÛn para obtener la fecha de la ˙ltima modificaciÛn de un fichero.
+' Funci√≥n para obtener la fecha de la √∫ltima modificaci√≥n de un fichero.
 Public Function GetFileDateLastModified(ByVal sFilePath As String, _
                                         Optional ByVal bDateTime As Boolean = False) As Date
     On Error GoTo Error_GetFileDateLastModified
@@ -547,7 +562,7 @@ Error_GetFileDateLastModified:
     GetError "modSystem.GetFileDateLastModified"
 End Function
 
-' FunciÛn para obtener la extensiÛn de un fichero a partir de su ruta.
+' Funci√≥n para obtener la extensi√≥n de un fichero a partir de su ruta.
 Public Function GetFileExt(ByVal sFilePath As String, _
                            Optional ByVal bGetDot As Boolean = False) As String
     Dim m_sFilePath()   As String
@@ -565,7 +580,7 @@ Error_GetFileExt:
     GetError "modSystem.GetFileExt"
 End Function
 
-' FunciÛn para obtener el nombre completo de un fichero (Archivo).
+' Funci√≥n para obtener el nombre completo de un fichero (Archivo).
 Public Function GetFileFullName(ByVal sFilePath As String, _
                                 Optional ByVal sDefault As String = vbNullString) As String
     On Error GoTo Error_GetFileFullName
@@ -584,7 +599,7 @@ Error_GetFileFullName:
     GetError "modSystem.GetFileFullName"
 End Function
 
-' FunciÛn para obtener el nombre de un fichero (Archivo).
+' Funci√≥n para obtener el nombre de un fichero (Archivo).
 Public Function GetFileName(ByVal sFilePath As String) As String
     On Error GoTo Error_GetFileName
 
@@ -596,7 +611,7 @@ Error_GetFileName:
     GetError "modSystem.GetFileName"
 End Function
 
-' FunciÛn para mostrar una ventana de di·logo para obtener la ruta del fichero a abrir.
+' Funci√≥n para mostrar una ventana de di√°logo para obtener la ruta del fichero a abrir.
 Public Function GetFileToOpen(ByRef result As Long, _
                               ByVal hwnd As Long, _
                               ByVal Filter As String, _
@@ -651,7 +666,7 @@ Error_GetFileToOpen:
     GetError "modSystem.GetFileToOpen"
 End Function
 
-' FunciÛn para mostrar una ventana de di·logo para obtener la ruta del fichero a guardar.
+' Funci√≥n para mostrar una ventana de di√°logo para obtener la ruta del fichero a guardar.
 Public Function GetFileToSave(ByRef result As Long, _
                               ByVal hwnd As Long, _
                               ByVal Filter As String, _
@@ -706,7 +721,7 @@ Error_GetFileToSave:
     GetError "modSystem.GetFileToSave"
 End Function
 
-' FunciÛn para obtener la ruta de ubicaciÛn de un fichero (Archivo).
+' Funci√≥n para obtener la ruta de ubicaci√≥n de un fichero (Archivo).
 Public Function GetFolderPath(ByVal sFilePath As String) As String
     On Error GoTo Error_GetFolderPath
 
@@ -769,13 +784,13 @@ Public Function GetCharCode(Optional ByVal lCharCode As enumCharcode = enumCharc
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' MÈtodo para mostrar un mensaje de error
+' M√©todo para mostrar un mensaje de error
 '-----------------------------------------------------------------------------------------------------------------------
-'   Par·metros:
+'   Par√°metros:
 '
 '       sSource     String              Origen del error.
 '
-'       sException  String (Opcional)   ExcepciÛn causante del error.
+'       sException  String (Opcional)   Excepci√≥n causante del error.
 '
 '-----------------------------------------------------------------------------------------------------------------------
 Public Sub GetError(ByVal sSource As String, _
@@ -785,7 +800,7 @@ Public Sub GetError(ByVal sSource As String, _
     MsgBox "[" & Err.Number & "]" & vbTab & sSource & ": " & Err.Description & vbTab & Err.Source & IIf(IsZrStr(sException), vbNullString, vbCrLf & vbCrLf & sException), (vbOKOnly + vbExclamation), "Error"
 End Sub
 
-' FunciÛn para pasar a may˙sculas la primera letra de un texto
+' Funci√≥n para pasar a may√∫sculas la primera letra de un texto
 Public Function GetLetterCase(ByVal sValue As String) As String
     On Error GoTo Error_GetLetterCase
 
@@ -797,7 +812,7 @@ Error_GetLetterCase:
     GetError "modSystem.GetLetterCase"
 End Function
 
-' FunciÛn para obtener la ruta de una carpeta especial
+' Funci√≥n para obtener la ruta de una carpeta especial
 Public Function GetSpecialFolder(Optional ByVal hwnd As Long = 0, _
                                  Optional ByVal lCSIDL As CSIDL_Enum = CSIDL_Enum.USER_PATH) As String
     Dim m_lResult       As Long
@@ -822,9 +837,9 @@ Error_GetSpecialFolder:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' FunciÛn para buscar un literal dentro de una cadena de texto con formato.
+' Funci√≥n para buscar un literal dentro de una cadena de texto con formato.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Par·metros:
+'   Par√°metros:
 '
 '       sValue      String              Cadena de texto donde buscar.
 '
@@ -853,9 +868,9 @@ Error_GetSrhStr:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' FunciÛn para validar si una variable es nula o tiene valor zero.
+' Funci√≥n para validar si una variable es nula o tiene valor zero.
 '-----------------------------------------------------------------------------------------------------------------------
-' Par·metros:
+' Par√°metros:
 '
 '       vValue      Variant     Variable a validar.
 '
@@ -865,9 +880,9 @@ Public Function IsZr(ByVal vValue As Variant) As Boolean
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' FunciÛn para validar si una variable es una fecha valida.
+' Funci√≥n para validar si una variable es una fecha valida.
 '-----------------------------------------------------------------------------------------------------------------------
-' Par·metros:
+' Par√°metros:
 '
 '       vValue      Variant             Variable a validar.
 '
@@ -885,9 +900,9 @@ Public Function IsZrDt(ByVal vValue As Variant, _
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' FunciÛn para validar si una variable no es cadena vacÌa o nula.
+' Funci√≥n para validar si una variable no es cadena vac√≠a o nula.
 '-----------------------------------------------------------------------------------------------------------------------
-' Par·metros:
+' Par√°metros:
 '
 '       vValue      Variant     Variable a validar.
 '
@@ -901,14 +916,14 @@ Public Function IsZrStr(ByVal vValue As Variant) As Boolean
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' FunciÛn para validar una cadena de texto contra una serie de expresiones regulares
+' Funci√≥n para validar una cadena de texto contra una serie de expresiones regulares
 '-----------------------------------------------------------------------------------------------------------------------
-' Par·metros:
+' Par√°metros:
 '
 '       sValue      String              Cadena de texto a validar.
 '
-'       sRegExp     String              ExpresiÛn regular con la que validar. Pueden se m·s de una expresiÛn regular,
-'                                       concaten·ndolas con el sÌmbolo "|" entre medias.
+'       sRegExp     String              Expresi√≥n regular con la que validar. Pueden se m√°s de una expresi√≥n regular,
+'                                       concaten√°ndolas con el s√≠mbolo "|" entre medias.
 '
 '-----------------------------------------------------------------------------------------------------------------------
 Public Function EvalRegExp(ByVal sValue As String, _
@@ -938,17 +953,17 @@ Error_EvalRegExp:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' FunciÛn para validar una cadena de texto contra una expresiÛn regular.
+' Funci√≥n para validar una cadena de texto contra una expresi√≥n regular.
 '-----------------------------------------------------------------------------------------------------------------------
-' Par·metros:
+' Par√°metros:
 '
 '       sValue      String              Cadena de texto a validar.
 '
-'       sRegExp     String              ExpresiÛn regular con la que validar.
+'       sRegExp     String              Expresi√≥n regular con la que validar.
 '
-'       bGlobal     Boolean (Opcional)  Indicador de si la b˙squeda es global.
+'       bGlobal     Boolean (Opcional)  Indicador de si la b√∫squeda es global.
 '
-'       bIgnoreCase Boolean (Opcional)  Indicador de si se ignoran may˙sculas y min˙sculas.
+'       bIgnoreCase Boolean (Opcional)  Indicador de si se ignoran may√∫sculas y min√∫sculas.
 '
 '       bMultiLine  Boolean (Opcional)  Indicador de si el valor contiene varias lineas.
 '
@@ -974,7 +989,7 @@ Error_EvalStr:
     GetError "modSystem.EvalStr", "sRegExp = " & sRegExp
 End Function
 
-' FunciÛn para reproducr un fichero de sonido WAV
+' Funci√≥n para reproducr un fichero de sonido WAV
 Public Function PlaySound(Optional ByVal sSoundFilePath As String = vbNullString) As Boolean
     On Error GoTo Error_PlaySound
 
@@ -986,7 +1001,7 @@ Error_PlaySound:
      GetError "modSystem.PlaySound"
 End Function
 
-' MÈtodo para leer como texto el contenido de un fichero (Archivo).
+' M√©todo para leer como texto el contenido de un fichero (Archivo).
 Public Function ReadFileV2(ByVal sFilePath As String, _
                            Optional ByVal lCharCode As enumCharcode = enumCharcode.CdoUS_ASCII) As String
     On Error GoTo Error_ReadFileV2
@@ -1005,7 +1020,7 @@ Error_ReadFileV2:
     GetError "modSystem.ReadFileV2"
 End Function
 
-' MÈtodo para leer como texto el contenido de un fichero (Archivo). (Ya no se emplea)
+' M√©todo para leer como texto el contenido de un fichero (Archivo). (Ya no se emplea)
 'Public Function ReadFile(ByVal sFilePath As String) As String
 '    Dim m_sLineText   As String
 '
@@ -1028,13 +1043,13 @@ End Function
 'End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' MÈtodo para leer como texto el contenido de un fichero (Archivo).
+' M√©todo para leer como texto el contenido de un fichero (Archivo).
 '-----------------------------------------------------------------------------------------------------------------------
-'   Par·metros:
+'   Par√°metros:
 '
 '       sFilePath       String                      Ruta del fichero de leer.
 '
-'       lCharCode       enumCharcode (opcional)     Tipo de codificaciÛn del fichero a leer.
+'       lCharCode       enumCharcode (opcional)     Tipo de codificaci√≥n del fichero a leer.
 '
 '-----------------------------------------------------------------------------------------------------------------------
 Public Function ReadFile(ByVal sFilePath As String, _
@@ -1055,7 +1070,7 @@ Error_ReadFile:
     GetError "modSystem.ReadFile", "sFilePath=" & sFilePath & vbCrLf & "CharCode=" & modSystem.GetCharCode(lCharCode)
 End Function
 
-' FunciÛn para renombrar un fichero.
+' Funci√≥n para renombrar un fichero.
 Public Function RenameFile(ByVal sFromFilePath As String, _
                            ByVal sToFilePath As String, _
                            Optional ByVal bOverwrite As Boolean = False) As Boolean
@@ -1064,9 +1079,9 @@ Public Function RenameFile(ByVal sFromFilePath As String, _
     ' Si existe copia de seguridad previa, se elimina
     If modSystem.FileExists(sToFilePath) Then
         If bOverwrite Then
-            If Not modSystem.DeleteFile(sToFilePath) Then Err.Raise vbObjectError, GetMDBName, "No se ha podido sustituir el fichero de destino. øPuede que estÈ en uso?"
+            If Not modSystem.DeleteFile(sToFilePath) Then Err.Raise vbObjectError, GetMDBName, "No se ha podido sustituir el fichero de destino. ¬øPuede que est√© en uso?"
         Else
-            Err.Raise vbObjectError, GetMDBName, "No se puede renombrar el archivo ya que se encuentra otro con el mismo nombre en la misma ubicaciÛn."
+            Err.Raise vbObjectError, GetMDBName, "No se puede renombrar el archivo ya que se encuentra otro con el mismo nombre en la misma ubicaci√≥n."
         End If
     End If
 
@@ -1081,9 +1096,9 @@ Error_RenameFile:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' FunciÛn para reemplazar un literal dentro de una cadena de texto.
+' Funci√≥n para reemplazar un literal dentro de una cadena de texto.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Par·metros:
+'   Par√°metros:
 '
 '       sValue      String              Cadena de texto donde buscar.
 '
@@ -1110,12 +1125,12 @@ Error_ReplStr:
     GetError "modSystem.ReplStr"
 End Function
 
-' FunciÛn para consultar la ventana de la aplicaciÛn de Access
+' Funci√≥n para consultar la ventana de la aplicaci√≥n de Access
 Public Function ShowAccessWindow(Optional ByVal iShowWindowMode As VBA.VbAppWinStyle = VBA.VbAppWinStyle.vbMaximizedFocus) As Long
     ShowAccessWindow = ShowWindow(Application.hWndAccessApp, iShowWindowMode)
 End Function
 
-' FunciÛn para eliminar cadenas nulas.
+' Funci√≥n para eliminar cadenas nulas.
 Public Function StripNulls(ByVal Str As String) As String
     On Error GoTo Error_StripNulls
 
@@ -1128,9 +1143,9 @@ Error_StripNulls:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' FunciÛn para limpiar una cadena de texto de caracteres especiales, seg˙n el tipo de codificaciÛn empleado
+' Funci√≥n para limpiar una cadena de texto de caracteres especiales, seg√∫n el tipo de codificaci√≥n empleado
 '-----------------------------------------------------------------------------------------------------------------------
-'   Par·metros:
+'   Par√°metros:
 '
 '       sValue      String                      Cadena de texto a limpiar.
 '
@@ -1143,63 +1158,63 @@ Public Function StripStr(ByVal sValue As String, _
 
     ' 1. Si no se trata de un texto para SQL
     If (lStripStr <> enumStripStr.SQL) Then
-        ' 2. Limpiamos las vocales acentuadas o con diÈresis
-        sValue = Replace(sValue, "·", "a", , , vbBinaryCompare)
-        sValue = Replace(sValue, "¡", "A", , , vbBinaryCompare)
-        sValue = Replace(sValue, "‰", "a", , , vbBinaryCompare)
-        sValue = Replace(sValue, "ƒ", "A", , , vbBinaryCompare)
-        sValue = Replace(sValue, "È", "e", , , vbBinaryCompare)
-        sValue = Replace(sValue, "…", "E", , , vbBinaryCompare)
-        sValue = Replace(sValue, "Î", "e", , , vbBinaryCompare)
-        sValue = Replace(sValue, "À", "E", , , vbBinaryCompare)
-        sValue = Replace(sValue, "Ì", "i", , , vbBinaryCompare)
-        sValue = Replace(sValue, "Õ", "I", , , vbBinaryCompare)
-        sValue = Replace(sValue, "Ô", "i", , , vbBinaryCompare)
-        sValue = Replace(sValue, "œ", "I", , , vbBinaryCompare)
-        sValue = Replace(sValue, "Û", "o", , , vbBinaryCompare)
-        sValue = Replace(sValue, "”", "O", , , vbBinaryCompare)
-        sValue = Replace(sValue, "ˆ", "o", , , vbBinaryCompare)
-        sValue = Replace(sValue, "÷", "O", , , vbBinaryCompare)
-        sValue = Replace(sValue, "˙", "u", , , vbBinaryCompare)
-        sValue = Replace(sValue, "⁄", "U", , , vbBinaryCompare)
-        sValue = Replace(sValue, "¸", "u", , , vbBinaryCompare)
-        sValue = Replace(sValue, "‹", "U", , , vbBinaryCompare)
+        ' 2. Limpiamos las vocales acentuadas o con di√©resis
+        sValue = Replace(sValue, "√°", "a", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√Å", "A", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√§", "a", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√Ñ", "A", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√©", "e", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√â", "E", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√´", "e", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√ã", "E", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√≠", "i", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√ç", "I", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√Ø", "i", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√è", "I", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√≥", "o", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√ì", "O", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√∂", "o", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√ñ", "O", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√∫", "u", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√ö", "U", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√º", "u", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√ú", "U", , , vbBinaryCompare)
     End If
 
-    ' 3. Si la codificaciÛn es ISO o SEPA
+    ' 3. Si la codificaci√≥n es ISO o SEPA
     If ((lStripStr = enumStripStr.ISO) Or _
         (lStripStr = enumStripStr.SEPA)) Then
-        ' 4. Reemplazamos los caracteres "—" y "«"
-        sValue = Replace(sValue, "Ò", "n", , , vbBinaryCompare)
-        sValue = Replace(sValue, "—", "N", , , vbBinaryCompare)
-        sValue = Replace(sValue, "Á", "c", , , vbBinaryCompare)
-        sValue = Replace(sValue, "«", "C", , , vbBinaryCompare)
+        ' 4. Reemplazamos los caracteres "√ë" y "√á"
+        sValue = Replace(sValue, "√±", "n", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√ë", "N", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√ß", "c", , , vbBinaryCompare)
+        sValue = Replace(sValue, "√á", "C", , , vbBinaryCompare)
     End If
 
-    ' 5. Depuramos caracteres extraÒos seg˙n el tipo de codificaciÛn
+    ' 5. Depuramos caracteres extra√±os seg√∫n el tipo de codificaci√≥n
     Select Case lStripStr
-        Case enumStripStr.BOE      ' CodificaciÛn del formato BOE (ISO-8859-1)
+        Case enumStripStr.BOE      ' Codificaci√≥n del formato BOE (ISO-8859-1)
             ' 6. Limpiamos los caracteres no correspondientes al formato BOE
-            sValue = modSystem.ReplStr(sValue, "[^A-Za-z0-9/\ //\«//\Á//\—//\Ò//\.//\,/]")
+            sValue = modSystem.ReplStr(sValue, "[^A-Za-z0-9/\ //\√á//\√ß//\√ë//\√±//\.//\,/]")
 
-        Case enumStripStr.ISO      ' CodificaciÛn ISO
-            ' 7. Limpiamos los caracteres no alfanumÈricos incluyendo los espacios
+        Case enumStripStr.ISO      ' Codificaci√≥n ISO
+            ' 7. Limpiamos los caracteres no alfanum√©ricos incluyendo los espacios
             sValue = modSystem.ReplStr(sValue, "[^A-Za-z0-9]")
 
-        Case enumStripStr.SEPA     ' CodificaciÛn SEPA
-            ' 8. Limpiamos los caracteres no alfanumÈricos que no correspondan al ISO-20022
+        Case enumStripStr.SEPA     ' Codificaci√≥n SEPA
+            ' 8. Limpiamos los caracteres no alfanum√©ricos que no correspondan al ISO-20022
             sValue = modSystem.ReplStr(sValue, "[^A-Za-z0-9/\///\-//\?//\://\(//\)//\.//\,//\'//\+//\ //\&//\<//\>//\""//\'/]")
 
-            ' 9. Para la codificaciÛn SEPA sustituimos caracteres especiales
+            ' 9. Para la codificaci√≥n SEPA sustituimos caracteres especiales
             sValue = Replace(sValue, "&", "&amp;", , , vbBinaryCompare)
             sValue = Replace(sValue, "<", "&lt;", , , vbBinaryCompare)
             sValue = Replace(sValue, ">", "&gt;", , , vbBinaryCompare)
             sValue = Replace(sValue, """", "&quot;", , , vbBinaryCompare)
             sValue = Replace(sValue, "'", "&apos;", , , vbBinaryCompare)
 
-        Case enumStripStr.SQL      ' CodificaciÛn SQL
+        Case enumStripStr.SQL      ' Codificaci√≥n SQL
             ' 10. Limpiamos los caracteres no permitidos en cadenas de texto SQL
-            sValue = modSystem.ReplStr(sValue, "[^A-Za-z0-9/\·//\¡//\‰//\ƒ//\È//\…//\Î//\À//\Ì//\Õ//\Ô//\œ//\Û//\”//\ˆ//\÷//\˙//\⁄//\¸//\‹//\ //\«//\Á//\—//\Ò//\.//\,//\://\;//\_//\'//\""//\&//\+//\-//\*//\///\^//\\//\(//\)//\=//\<//\>//\(//\)//\[//\]/]")
+            sValue = modSystem.ReplStr(sValue, "[^A-Za-z0-9/\√°//\√Å//\√§//\√Ñ//\√©//\√â//\√´//\√ã//\√≠//\√ç//\√Ø//\√è//\√≥//\√ì//\√∂//\√ñ//\√∫//\√ö//\√º//\√ú//\ //\√á//\√ß//\√ë//\√±//\.//\,//\://\;//\_//\'//\""//\&//\+//\-//\*//\///\^//\\//\(//\)//\=//\<//\>//\(//\)//\[//\]/]")
 
             ' 11. Depuramos las comillas simples y dobles
             sValue = Replace(sValue, "'", "''", , , vbBinaryCompare)
@@ -1261,14 +1276,14 @@ Public Function OpenFolderPicker() As String
     On Error GoTo Error_OpenFolderPicker
 
     With Application.FileDialog(enumMsoFileDialogType.msoFileDialogFolderPicker)
-        ' 1. Mostramos la venta de di·logo
+        ' 1. Mostramos la venta de di√°logo
         .Show
 
         ' 2. Si se ha seleccionado ficheros
         If Not IsZr(.SelectedItems.Count) Then
             Dim m_lIdx      As Long
 
-            ' 3. Recorremos la colecciÛn de ficheros seleccionados
+            ' 3. Recorremos la colecci√≥n de ficheros seleccionados
             For m_lIdx = 1 To .SelectedItems.Count
                 ' 4. Construimos la cadena de rutas de ficheros separando por ";"
                 If IsZrStr(OpenFolderPicker) Then
@@ -1287,9 +1302,9 @@ Error_OpenFolderPicker:
 End Function
 
 '-----------------------------------------------------------------------------------------------------------------------
-' FunciÛn para abrir un fichero MS documento Excel.
+' Funci√≥n para abrir un fichero MS documento Excel.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Par·metros:
+'   Par√°metros:
 '
 '       sMSExcelFilePath    String                      Ruta del fichero MS Excel.
 '
@@ -1304,7 +1319,7 @@ Public Function OpenMSExcel(ByVal sMSExcelFilePath As String, _
     If modSystem.FileExists(sMSExcelFilePath) Then OpenMSExcel = Not IsZr(ShellExecute(IIf(IsZr(lhWnd), Application.hWndAccessApp, lhWnd), "open", sMSExcelFilePath, vbNullString, vbNullString, lWindowStyle))
 End Function
 
-' FunciÛn para abrir un archivo HTML
+' Funci√≥n para abrir un archivo HTML
 Public Function OpenURL(ByVal sURL As String, _
                         Optional ByVal lWindowStyle As VBA.VbAppWinStyle = VBA.VbAppWinStyle.vbNormalFocus) As Boolean
     On Error GoTo Error_OpenURL
@@ -1319,9 +1334,9 @@ End Function
 
 
 '-----------------------------------------------------------------------------------------------------------------------
-' FunciÛn para descomprimir el contenido de un fichero Zip.
+' Funci√≥n para descomprimir el contenido de un fichero Zip.
 '-----------------------------------------------------------------------------------------------------------------------
-'   Par·metros:
+'   Par√°metros:
 '
 '       sZipFilePath        String                  Ruta del fichero Zip a descomprimir.
 '
@@ -1338,7 +1353,7 @@ Public Function UnZip(ByVal sZIPFilePath As String, _
 
     ' 1. Si no se ha indicado la ruta donde descomprimir los ficheros,
     '    se toma por defecto la ruta de una carpeta con el nombre del
-    '    mismo fichero Zip a descomprimir, y en del misma ubicaciÛn
+    '    mismo fichero Zip a descomprimir, y en del misma ubicaci√≥n
     If IsZrStr(sFolderPath) Then sFolderPath = (modSystem.GetFolderPath(sZIPFilePath) & modSystem.GetFileName(sZIPFilePath) & "\")
 
     ' 2. Si no existe la ruta de la carpeta
@@ -1346,14 +1361,14 @@ Public Function UnZip(ByVal sZIPFilePath As String, _
     If Not modSystem.FolderExists(sFolderPath) Then modSystem.BuiltPath sFolderPath
 
     With CreateObject("Shell.Application")
-        ' 3. Si no se indicÛ un ˙nico fichero a extraer
+        ' 3. Si no se indic√≥ un √∫nico fichero a extraer
         If IsZrStr(sFileNameToExtract) Then
             ' 4. Descomprimimos todos los elementos del fichero Zip
             .NameSpace(Error$ & sFolderPath).CopyHere .NameSpace(Error$ & sZIPFilePath).Items
 
             UnZip = True
         Else
-            ' 5. Descomprimimos ese fichero ˙nicamente
+            ' 5. Descomprimimos ese fichero √∫nicamente
             .NameSpace(Error$ & sFolderPath).CopyHere .NameSpace(Error$ & sZIPFilePath).Items.Item(Error$ & sFileNameToExtract)
 
             UnZip = modSystem.FileExists(sFolderPath & sFileNameToExtract)
@@ -1366,7 +1381,7 @@ Error_UnZip:
     GetError "modSystem.UnZip"
 End Function
 
-' FunciÛn para insertar una entrada en un archivo de texto.
+' Funci√≥n para insertar una entrada en un archivo de texto.
 Public Function WriteFileV2(ByVal sFilePath As String, _
                           ByVal sText As String, _
                           Optional ByVal lCharCode As enumCharcode = enumCharcode.CdoISO_8859_1, _
@@ -1390,7 +1405,7 @@ Error_WriteFileV2:
     GetError "modSystem.WriteFileV2"
 End Function
 
-' FunciÛn para insertar una entrada en un archivo de texto. (Ya no se emplea)
+' Funci√≥n para insertar una entrada en un archivo de texto. (Ya no se emplea)
 Public Function WriteFile(ByVal sFilePath As String, _
                           ByVal sText As String) As Boolean
     On Error GoTo Error_WriteFile
