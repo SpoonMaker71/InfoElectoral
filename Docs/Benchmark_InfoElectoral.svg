@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 300 300" width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .label { font: 12px sans-serif; fill: #333; }
+    .value { font: bold 14px sans-serif; fill: #0078D7; }
+    .line { stroke: #ccc; stroke-width: 1; }
+    .shape { fill: rgba(0,120,215,0.2); stroke: #0078D7; stroke-width: 2; }
+  </style>
+
+  <!-- Centro -->
+  <circle cx="150" cy="150" r="3" fill="#0078D7"/>
+
+  <!-- Ejes -->
+  <line x1="150" y1="150" x2="150" y2="30" class="line"/>
+  <line x1="150" y1="150" x2="240" y2="65" class="line"/>
+  <line x1="150" y1="150" x2="270" y2="150" class="line"/>
+  <line x1="150" y1="150" x2="240" y2="235" class="line"/>
+  <line x1="150" y1="150" x2="150" y2="270" class="line"/>
+  <line x1="150" y1="150" x2="60" y2="235" class="line"/>
+  <line x1="150" y1="150" x2="30" y2="150" class="line"/>
+  <line x1="150" y1="150" x2="60" y2="65" class="line"/>
+
+  <!-- Etiquetas -->
+  <text x="150" y="20" class="label" text-anchor="middle">Modularidad</text>
+  <text x="250" y="65" class="label" text-anchor="middle">Documentación</text>
+  <text x="280" y="150" class="label" text-anchor="middle">Automatización</text>
+  <text x="245" y="245" class="label" text-anchor="middle">UX / UI</text>
+  <text x="150" y="290" class="label" text-anchor="middle">Trazabilidad</text>
+  <text x="55" y="245" class="label" text-anchor="middle">Exportación</text>
+  <text x="20" y="150" class="label" text-anchor="middle">Análisis técnico</text>
+  <text x="55" y="65" class="label" text-anchor="middle">Adaptabilidad</text>
+
+  <!-- Valoración de InfoElectoral -->
+  <polygon class="shape"
+    points="
+      150,50   <!-- Modularidad (10/10) -->
+      225,85   <!-- Documentación (9/10) -->
+      255,150  <!-- Automatización (9/10) -->
+      225,215  <!-- UX/UI (8/10) -->
+      150,250  <!-- Trazabilidad (10/10) -->
+      75,215   <!-- Exportación (10/10) -->
+      45,150   <!-- Análisis técnico (10/10) -->
+      75,85    <!-- Adaptabilidad (9/10) -->
+    "/>
+
+  <!-- Valor numérico en el centro -->
+  <text x="150" y="145" class="value" text-anchor="middle">9.5 / 10</text>
+</svg>
