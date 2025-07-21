@@ -55,7 +55,7 @@ Según su análisis técnico:
 - La estructura permite fácil mantenimiento, integración en otros sistemas y adaptación a nuevos procesos electorales.
 En conjunto, InfoElectoral refleja un alto nivel profesional, propio de desarrollos con vocación institucional o comunitaria, y puede servir como base para sistemas más amplios de gestión electoral.
 
-![Benchmark InfoElectoral](./docs/Benchmark_InfoElectoral.svg)
+![Benchmark InfoElectoral](./Docs/Benchmark_InfoElectoral.svg)
 
 Análisis realizado con el acompañamiento técnico de Microsoft Copilot — julio de 2025.
 
