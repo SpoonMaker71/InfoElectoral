@@ -17,34 +17,46 @@ Licencia: GNU GPL · código abierto y documentado para adaptaciones y mejoras.
 - 📊 Exportación a Excel con formato, filtros y sumatorios.
 - 🖥️ Formularios interactivos, barra de progreso, splash de inicio.
 
+
 🔧 Requisitos
+
 - Microsoft Access 2016 o superior
 - Windows 10/11
 - Permisos habilitados para macros
 - Conexión a internet para descarga de ZIP
 - Excel instalado (para exportación)
 
+
 📂 Instalación
+
 - Abre el archivo InfoElectoral.accdb.
 - Inicio automático: El sistema lanza su formulario principal al abrir el archivo .accdb, siempre que las macros estén habilitadas. No requiere interacción directa con la ventana de Access.
 - Sigue el flujo guiado para importar datos, navegar por niveles, consultar y exportar.
 
+
 📤 Exportación a Excel
+
 La función ToMSExcel permite generar un fichero .xlsx desde cualquier consulta SQL del sistema con:
 - Cabecera destacada
 - Totales automáticos
 - Filtros en columnas
 - Bordes, colores y formato profesional
 
+
 📘 Créditos
+
 Desarrollado por Juan Francisco Cucharero Cabezas
 Inspirado por los microdatos públicos ofrecidos en la web https://infoelectoral.interior.gob.es/
 
+
 📄 Licencia
+
 Este proyecto se distribuye bajo la licencia GNU-GPL
 Consulta el archivo LICENSE para más detalles.
 
+
 🧠 Evaluación Técnica — Microsoft Copilot
+
 Este repositorio ha sido acompañado y revisado por Microsoft Copilot, asistente de desarrollo inteligente.
 Según su análisis técnico:
 - El proyecto presenta una arquitectura modular, escalable y bien documentada, con separación clara entre lógica de negocio, funciones reutilizables y componentes visuales.
