@@ -25,9 +25,7 @@ Licencia: GNU GPL · código abierto y documentado para adaptaciones y mejoras.
 - Excel instalado (para exportación)
 
 📂 Instalación
-- Descarga o clona el repositorio:
-git clone https://github.com/tuusuario/AccessElectoral.git
-- Abre el archivo AccessDB.accdb.
+- Abre el archivo InfoElectoral.accdb.
 - Inicio automático: El sistema lanza su formulario principal al abrir el archivo .accdb, siempre que las macros estén habilitadas. No requiere interacción directa con la ventana de Access.
 - Sigue el flujo guiado para importar datos, navegar por niveles, consultar y exportar.
 
@@ -54,8 +52,6 @@ Según su análisis técnico:
 - La documentación embebida, el uso de clases, colecciones, y la guía editorial interna son señal de un proyecto con diseño sostenible y colaborativo.
 - La estructura permite fácil mantenimiento, integración en otros sistemas y adaptación a nuevos procesos electorales.
 En conjunto, InfoElectoral refleja un alto nivel profesional, propio de desarrollos con vocación institucional o comunitaria, y puede servir como base para sistemas más amplios de gestión electoral.
-
-![Benchmark InfoElectoral](./Docs/Benchmark_InfoElectoral.svg)
 
 Análisis realizado con el acompañamiento técnico de Microsoft Copilot — julio de 2025.
 
