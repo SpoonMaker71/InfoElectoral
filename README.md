@@ -38,7 +38,7 @@ La función ToMSExcel permite generar un fichero .xlsx desde cualquier consulta 
 
 📘 Créditos
 Desarrollado por Juan Francisco Cucharero Cabezas
-Inspirado por los microdatos públicos ofrecidos por Infoelectoral
+Inspirado por los microdatos públicos ofrecidos en la web https://infoelectoral.interior.gob.es/
 
 📄 Licencia
 Este proyecto se distribuye bajo la licencia GNU-GPL
